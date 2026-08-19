@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PRO CONTROL — Employee Center</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070b14;
+  --panel:#0d1320;
+  --panel2:#111a2b;
+  --line:#1e2b42;
+  --text:#eef4ff;
+  --muted:#7f8da6;
+  --blue:#3b82f6;
+  --cyan:#22d3ee;
+  --green:#22c55e;
+  --red:#ef4444;
+  --yellow:#f59e0b;
+  --radius:18px;
+}
+body{
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;border:0}
+.app{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{
+  width:260px;
+  background:#090e19;
+  border-right:1px solid var(--line);
+  padding:22px 15px;
+  position:fixed;
+  inset:0 auto 0 0;
+  z-index:20;
+}
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:5px 10px 28px;
+}
+.logoIcon{
+  width:40px;height:40px;border-radius:13px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  display:grid;place-items:center;
+  font-weight:900;color:white;
+  box-shadow:0 0 30px #1683ff33;
+}
+.logo b{font-size:17px}
+.logo span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.sectionLabel{
+  color:#53627c;font-size:10px;font-weight:800;
+  letter-spacing:1.4px;padding:10px 12px;
+}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav button{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 13px;
+  background:transparent;
+  color:#93a2ba;
+  border-radius:12px;
+  text-align:left;
+  transition:.2s;
+}
+.nav button:hover{background:#111a2b;color:white}
+.nav button.active{
+  background:linear-gradient(90deg,#172b4e,#102039);
+  color:#fff;
+  box-shadow:inset 3px 0 var(--blue);
+}
+.navIcon{width:22px;text-align:center}
+.sideBottom{
+  position:absolute;
+  bottom:18px;
+  left:15px;right:15px;
+}
+.systemBox{
+  background:#0d1524;
+  border:1px solid var(--line);
+  padding:13px;
+  border-radius:14px;
+}
+.systemTop{display:flex;justify-content:space-between;font-size:12px}
+.online{color:var(--green)}
+.dot{
+  display:inline-block;width:7px;height:7px;
+  background:var(--green);border-radius:50%;
+  margin-right:6px;box-shadow:0 0 10px var(--green);
+}
+
+/* MAIN */
+.main{margin-left:260px;width:calc(100% - 260px)}
+.topbar{
+  height:72px;border-bottom:1px solid var(--line);
+  background:#080d17dd;backdrop-filter:blur(15px);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;position:sticky;top:0;z-index:15;
+}
+.pageTitle h1{font-size:19px}
+.pageTitle p{font-size:11px;color:var(--muted);margin-top:3px}
+.topActions{display:flex;gap:9px;align-items:center}
+.iconBtn,.userBtn{
+  height:40px;border:1px solid var(--line);
+  background:#0d1524;color:#cbd5e1;
+  border-radius:11px;padding:0 13px;
+}
+.iconBtn:hover,.userBtn:hover{border-color:#35547e;background:#111c30}
+.userBtn{display:flex;align-items:center;gap:9px}
+.avatar{
+  width:27px;height:27px;border-radius:9px;
+  background:linear-gradient(135deg,#2563eb,#06b6d4);
+  display:grid;place-items:center;font-size:11px;font-weight:bold;
+}
+.content{padding:25px}
+
+/* PAGES */
+.page{display:none;animation:fade .25s ease}
+.page.active{display:block}
+@keyframes fade{
+  from{opacity:0;transform:translateY(5px)}
+  to{opacity:1;transform:none}
+}
+.pageHead{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:20px;
+}
+.pageHead h2{font-size:22px}
+.pageHead p{color:var(--muted);font-size:12px;margin-top:5px}
+.primary{
+  background:linear-gradient(135deg,#2563eb,#0891b2);
+  color:white;padding:11px 16px;border-radius:11px;
+  font-weight:700;box-shadow:0 8px 25px #1677ff22;
+}
+.secondary{
+  background:#111a2a;color:#cbd5e1;
+  border:1px solid var(--line);padding:10px 15px;border-radius:11px;
+}
+.danger{background:#35151a;color:#ff9292;border:1px solid #61232b}
+
+/* STATS */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;margin-bottom:18px;
+}
+.stat{
+  background:linear-gradient(145deg,#0d1524,#0a111e);
+  border:1px solid var(--line);
+  border-radius:17px;padding:18px;
+  position:relative;overflow:hidden;
+}
+.stat:after{
+  content:"";position:absolute;width:80px;height:80px;
+  right:-30px;top:-30px;border-radius:50%;
+  background:#2475ff13;
+}
+.statTop{display:flex;justify-content:space-between}
+.statIcon{
+  width:36px;height:36px;border-radius:10px;
+  background:#142542;display:grid;place-items:center;
+}
+.stat small{color:var(--muted);font-size:11px}
+.stat h3{font-size:27px;margin:9px 0 4px}
+.trend{font-size:11px;color:var(--green)}
+.trend.down{color:var(--red)}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1.45fr 1fr;gap:16px}
+.card{
+  background:#0d1523;
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:18px;
+}
+.cardHead{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:17px;
+}
+.cardHead h3{font-size:14px}
+.cardHead span{font-size:11px;color:var(--muted)}
+.activity{display:flex;flex-direction:column}
+.activityItem{
+  display:flex;gap:12px;padding:13px 0;
+  border-bottom:1px solid #182338;
+}
+.activityItem:last-child{border:0}
+.activityIcon{
+  width:34px;height:34px;border-radius:10px;
+  background:#15223a;display:grid;place-items:center;
+}
+.activityText{flex:1}
+.activityText b{font-size:12px}
+.activityText p{font-size:10px;color:var(--muted);margin-top:4px}
+.time{font-size:10px;color:#53627c}
+
+/* MINI CHART */
+.chart{
+  height:180px;display:flex;align-items:end;gap:10px;
+  padding:15px 5px 0;
+}
+.bar{
+  flex:1;border-radius:7px 7px 2px 2px;
+  background:linear-gradient(to top,var(--blue),var(--cyan));
+  min-height:15px;opacity:.85;
+}
+.chartLabels{display:flex;justify-content:space-between;color:#53627c;font-size:9px}
+
+/* TABLE */
+.tableWrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th{
+  color:#64748b;text-align:left;font-size:10px;
+  text-transform:uppercase;letter-spacing:.6px;
+  padding:12px;border-bottom:1px solid var(--line);
+}
+td{
+  padding:14px 12px;border-bottom:1px solid #182338;
+  font-size:12px;
+}
+.badge{
+  padding:5px 8px;border-radius:7px;
+  font-size:9px;font-weight:800;
+}
+.green{background:#0d2b1b;color:#54dc89}
+.red{background:#32151b;color:#ff7c8a}
+.yellow{background:#31250f;color:#f9c94d}
+.blue{background:#102643;color:#65a9ff}
+
+/* CONTROL */
+.controlGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.controlItem{
+  border:1px solid var(--line);
+  background:#0b1320;
+  padding:17px;border-radius:14px;
+  display:flex;align-items:center;gap:14px;
+}
+.controlInfo{flex:1}
+.controlInfo b{font-size:12px}
+.controlInfo p{font-size:10px;color:var(--muted);margin-top:4px}
+.toggle{
+  width:46px;height:25px;border-radius:20px;
+  background:#263246;padding:3px;
+  transition:.2s;flex-shrink:0;
+}
+.toggle i{
+  display:block;width:19px;height:19px;border-radius:50%;
+  background:#8a98ad;transition:.2s;
+}
+.toggle.on{background:#1763d1}
+.toggle.on i{transform:translateX(21px);background:white}
+
+/* FORMS */
+.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1/-1}
+.field label{font-size:11px;color:#9aa8bd}
+.field input,.field textarea,.field select{
+  background:#09111e;border:1px solid var(--line);
+  color:white;padding:11px 12px;border-radius:10px;
+  outline:none;
+}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field textarea:focus,.field select:focus{
+  border-color:#316bc0;box-shadow:0 0 0 3px #2463b51a;
+}
+
+/* WIDGETS */
+.widgetGrid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+}
+.widget{
+  border:1px solid var(--line);background:#0b1320;
+  border-radius:15px;padding:17px;
+}
+.widgetTop{display:flex;justify-content:space-between}
+.widgetIcon{
+  width:40px;height:40px;border-radius:11px;
+  background:#142541;display:grid;place-items:center;
+}
+.widget h4{margin-top:13px;font-size:13px}
+.widget p{font-size:10px;color:var(--muted);margin-top:5px}
+
+/* PREVIEW */
+.previewShell{
+  background:#05080e;border:1px solid var(--line);
+  border-radius:18px;padding:12px;
+}
+.previewBrowser{
+  border:1px solid #1d293d;border-radius:12px;overflow:hidden;
+  background:#fff;color:#111;min-height:520px;
+}
+.previewTop{
+  height:48px;background:#fff;border-bottom:1px solid #ddd;
+  display:flex;align-items:center;padding:0 16px;gap:10px;
+}
+.previewLogo{font-weight:900;color:#2563eb}
+.previewNav{margin-left:auto;display:flex;gap:14px;font-size:11px;color:#667085}
+.previewBody{padding:25px;min-height:470px}
+.previewHero{
+  background:linear-gradient(135deg,#2563eb,#06b6d4);
+  color:white;border-radius:18px;padding:30px;
+}
+.previewHero h1{font-size:27px}
+.previewHero p{margin-top:8px;opacity:.85;font-size:12px}
+.previewCards{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:12px;margin-top:15px;
+}
+.previewCard{
+  border:1px solid #e4e7ec;padding:17px;border-radius:13px;
+}
+.previewCard b{font-size:12px}
+.previewCard p{font-size:10px;color:#667085;margin-top:5px}
+
+/* LOG */
+.log{
+  display:flex;flex-direction:column;gap:8px;
+}
+.logItem{
+  padding:13px;background:#0a121f;border:1px solid var(--line);
+  border-radius:11px;font-size:11px;
+}
+.logItem span{color:var(--muted);font-size:9px;display:block;margin-top:4px}
+
+/* TOAST */
+.toast{
+  position:fixed;right:22px;bottom:22px;
+  background:#111c2d;border:1px solid #29405f;
+  color:white;padding:13px 17px;border-radius:12px;
+  box-shadow:0 20px 50px #0008;
+  transform:translateY(100px);opacity:0;
+  transition:.3s;z-index:100;
+  font-size:12px;
+}
+.toast.show{transform:none;opacity:1}
+
+/* MOBILE */
+.mobileMenu{display:none}
+@media(max-width:1050px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .grid2{grid-template-columns:1fr}
+  .widgetGrid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s;
+  }
+  .sidebar.open{transform:none}
+  .main{margin-left:0;width:100%}
+  .mobileMenu{display:block}
+  .content{padding:15px}
+  .topbar{padding:0 15px}
+  .stats{grid-template-columns:1fr 1fr}
+  .controlGrid,.formGrid{grid-template-columns:1fr}
+  .widgetGrid{grid-template-columns:1fr}
+  .previewCards{grid-template-columns:1fr}
+  .topActions .hideMobile{display:none}
+}
+@media(max-width:450px){
+  .stats{grid-template-columns:1fr}
+  .pageHead{align-items:flex-start;gap:10px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="logo">
+    <div class="logoIcon">P</div>
+    <div>
+      <b>PRO CONTROL</b>
+      <span>EMPLOYEE CENTER</span>
+    </div>
+  </div>
+
+  <div class="sectionLabel">MAIN</div>
+  <div class="nav">
+    <button class="active" onclick="showPage('dashboard',this)">
+      <span class="navIcon">▦</span> Dashboard
+    </button>
+    <button onclick="showPage('pageControl',this)">
+      <span class="navIcon">◈</span> Page Controller
+    </button>
+    <button onclick="showPage('widgets',this)">
+      <span class="navIcon">◆</span> Widget Manager
+    </button>
+    <button onclick="showPage('announcements',this)">
+      <span class="navIcon">◉</span> Announcements
+    </button>
+  </div>
+
+  <div class="sectionLabel">SYSTEM</div>
+  <div class="nav">
+    <button onclick="showPage('users',this)">
+      <span class="navIcon">♙</span> Users
+    </button>
+    <button onclick="showPage('analytics',this)">
+      <span class="navIcon">⌁</span> Analytics
+    </button>
+    <button onclick="showPage('theme',this)">
+      <span class="navIcon">✦</span> Theme Studio
+    </button>
+    <button onclick="showPage('preview',this)">
+      <span class="navIcon">⊙</span> Live Preview
+    </button>
+    <button onclick="showPage('logs',this)">
+      <span class="navIcon">≡</span> Activity Logs
+    </button>
+  </div>
+
+  <div class="sectionLabel">TOOLS</div>
+  <div class="nav">
+    <button onclick="exportSettings()">
+      <span class="navIcon">⇩</span> Export Settings
+    </button>
+    <button onclick="importSettings()">
+      <span class="navIcon">⇧</span> Import Settings
+    </button>
+    <button onclick="resetAll()">
+      <span class="navIcon">↻</span> Reset System
+    </button>
+  </div>
+
+  <div class="sideBottom">
+    <div class="systemBox">
+      <div class="systemTop">
+        <span>System Status</span>
+        <span class="online"><span class="dot"></span>ONLINE</span>
+      </div>
+      <div style="font-size:9px;color:#53627c;margin-top:7px">
+        Local Mode • No Database
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<header class="topbar">
+  <div class="pageTitle">
+    <button class="iconBtn mobileMenu" onclick="toggleMenu()">☰</button>
+    <span id="mobileGap"></span>
+    <div style="display:inline-block">
+      <h1 id="topTitle">Dashboard</h1>
+      <p>Employee Control Center</p>
+    </div>
+  </div>
+
+  <div class="topActions">
+    <button class="iconBtn hideMobile" onclick="showToast('ไม่มีการแจ้งเตือนใหม่')">🔔</button>
+    <button class="iconBtn hideMobile" onclick="showPage('preview',document.querySelectorAll('.nav button')[7])">👁</button>
+    <button class="userBtn">
+      <div class="avatar">AD</div>
+      <span class="hideMobile">Administrator</span>
+      <span>⌄</span>
+    </button>
+  </div>
+</header>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+<section class="page active" id="dashboard">
+  <div class="pageHead">
+    <div>
+      <h2>Good morning, Administrator 👋</h2>
+      <p>นี่คือภาพรวมของระบบวันนี้</p>
+    </div>
+    <button class="primary" onclick="showToast('Dashboard ถูกอัปเดตแล้ว')">↻ Refresh</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="statTop"><small>ACTIVE USERS</small><div class="statIcon">👥</div></div>
+      <h3>1,284</h3><span class="trend">↗ +12.8%</span>
+    </div>
+    <div class="stat">
+      <div class="statTop"><small>PAGE VIEWS</small><div class="statIcon">◉</div></div>
+      <h3>8,492</h3><span class="trend">↗ +8.4%</span>
+    </div>
+    <div class="stat">
+      <div class="statTop"><small>ACTIVE WIDGETS</small><div class="statIcon">◆</div></div>
+      <h3 id="widgetCount">12</h3><span class="trend">● Stable</span>
+    </div>
+    <div class="stat">
+      <div class="statTop"><small>ALERTS</small><div class="statIcon">!</div></div>
+      <h3>03</h3><span class="trend down">↘ -4.2%</span>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="cardHead">
+        <h3>Usage Overview</h3>
+        <span>Last 7 days</span>
+      </div>
+      <div class="chart">
+        <div class="bar" style="height:44%"></div>
+        <div class="bar" style="height:58%"></div>
+        <div class="bar" style="height:52%"></div>
+        <div class="bar" style="height:75%"></div>
+        <div class="bar" style="height:66%"></div>
+        <div class="bar" style="height:91%"></div>
+        <div class="bar" style="height:82%"></div>
+      </div>
+      <div class="chartLabels">
+        <span>MON</span><span>TUE</span><span>WED</span>
+        <span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cardHead">
+        <h3>Live Activity</h3>
+        <span>Real-time</span>
+      </div>
+      <div class="activity">
+        <div class="activityItem">
+          <div class="activityIcon">🔐</div>
+          <div class="activityText"><b>Administrator logged in</b><p>Security system</p></div>
+          <span class="time">now</span>
+        </div>
+        <div class="activityItem">
+          <div class="activityIcon">🎨</div>
+          <div class="activityText"><b>Theme configuration updated</b><p>Appearance</p></div>
+          <span class="time">2m</span>
+        </div>
+        <div class="activityItem">
+          <div class="activityIcon">📢</div>
+          <div class="activityText"><b>Announcement published</b><p>Content Manager</p></div>
+          <span class="time">8m</span>
+        </div>
+        <div class="activityItem">
+          <div class="activityIcon">👤</div>
+          <div class="activityText"><b>User session started</b><p>User Management</p></div>
+          <span class="time">12m</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE CONTROL -->
+<section class="page" id="pageControl">
+  <div class="pageHead">
+    <div><h2>Page Controller</h2><p>ควบคุมองค์ประกอบที่จะแสดงบนฝั่งผู้ใช้งาน</p></div>
+    <button class="primary" onclick="saveControls()">✓ Save Configuration</button>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <h3>HOME PAGE COMPONENTS</h3>
+      <span>LIVE CONFIGURATION</span>
+    </div>
+    <div class="controlGrid" id="controls"></div>
+  </div>
+</section>
+
+<!-- WIDGETS -->
+<section class="page" id="widgets">
+  <div class="pageHead">
+    <div><h2>Widget Manager</h2><p>จัดการ Widget บนหน้าเว็บไซต์</p></div>
+    <button class="primary" onclick="showToast('เปิดระบบเพิ่ม Widget')">＋ Add Widget</button>
+  </div>
+  <div class="widgetGrid" id="widgetGrid"></div>
+</section>
+
+<!-- ANNOUNCEMENTS -->
+<section class="page" id="announcements">
+  <div class="pageHead">
+    <div><h2>Announcement Center</h2><p>จัดการประกาศสำหรับผู้ใช้งาน</p></div>
+    <button class="primary" onclick="openAnnouncement()">＋ New Announcement</button>
+  </div>
+
+  <div class="card">
+    <div class="tableWrap">
+      <table>
+        <thead><tr><th>Announcement</th><th>Status</th><th>Audience</th><th>Updated</th><th>Action</th></tr></thead>
+        <tbody id="announcementTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- USERS -->
+<section class="page" id="users">
+  <div class="pageHead">
+    <div><h2>User Management</h2><p>จัดการผู้ใช้งานในระบบแบบจำลอง</p></div>
+    <button class="primary" onclick="showToast('ระบบเพิ่ม User พร้อมใช้งาน')">＋ Add User</button>
+  </div>
+  <div class="card">
+    <div class="tableWrap">
+      <table>
+        <thead><tr><th>User</th><th>Role</th><th>Status</th><th>Last Activity</th><th>Access</th></tr></thead>
+        <tbody>
+          <tr><td><b>Somchai Admin</b></td><td>Administrator</td><td><span class="badge green">ONLINE</span></td><td>Just now</td><td><button class="secondary" onclick="showToast('เปิด User Profile')">View</button></td></tr>
+          <tr><td><b>System Manager</b></td><td>Manager</td><td><span class="badge green">ONLINE</span></td><td>3 min ago</td><td><button class="secondary">View</button></td></tr>
+          <tr><td><b>Content Team</b></td><td>Editor</td><td><span class="badge yellow">IDLE</span></td><td>24 min ago</td><td><button class="secondary">View</button></td></tr>
+          <tr><td><b>Guest Account</b></td><td>Viewer</td><td><span class="badge red">OFFLINE</span></td><td>2 hrs ago</td><td><button class="secondary">View</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ANALYTICS -->
+<section class="page" id="analytics">
+  <div class="pageHead">
+    <div><h2>Analytics</h2><p>สถิติการใช้งานเว็บไซต์</p></div>
+    <button class="secondary" onclick="showToast('Export Analytics สำเร็จ')">⇩ Export</button>
+  </div>
+  <div class="stats">
+    <div class="stat"><small>AVG. SESSION</small><h3>08:42</h3><span class="trend">↗ 6.4%</span></div>
+    <div class="stat"><small>BOUNCE RATE</small><h3>24.8%</h3><span class="trend">↘ 3.1%</span></div>
+    <div class="stat"><small>CONVERSION</small><h3>18.4%</h3><span class="trend">↗ 2.7%</span></div>
+    <div class="stat"><small>UPTIME</small><h3>99.98%</h3><span class="trend">● Excellent</span></div>
+  </div>
+  <div class="card">
+    <div class="cardHead"><h3>Traffic Analysis</h3><span>Simulated data</span></div>
+    <div class="chart" style="height:260px">
+      <div class="bar" style="height:30%"></div>
+      <div class="bar" style="height:42%"></div>
+      <div class="bar" style="height:37%"></div>
+      <div class="bar" style="height:64%"></div>
+      <div class="bar" style="height:54%"></div>
+      <div class="bar" style="height:82%"></div>
+      <div class="bar" style="height:72%"></div>
+      <div class="bar" style="height:91%"></div>
+      <div class="bar" style="height:78%"></div>
+      <div class="bar" style="height:96%"></div>
+    </div>
+  </div>
+</section>
+
+<!-- THEME -->
+<section class="page" id="theme">
+  <div class="pageHead">
+    <div><h2>Theme Studio</h2><p>ปรับแต่งหน้าตาฝั่งผู้ใช้งาน</p></div>
+    <button class="primary" onclick="saveTheme()">✓ Apply Theme</button>
+  </div>
+  <div class="card">
+    <div class="formGrid">
+      <div class="field">
+        <label>เว็บไซต์ชื่อ</label>
+        <input id="siteName" value="PRO PORTAL">
+      </div>
+      <div class="field">
+        <label>ข้อความ Hero</label>
+        <input id="heroText" value="Welcome to our platform">
+      </div>
+      <div class="field">
+        <label>สีหลัก</label>
+        <input id="themeColor" type="color" value="#2563eb" style="height:45px;padding:4px">
+      </div>
+      <div class="field">
+        <label>โหมด</label>
+        <select id="themeMode">
+          <option>Modern</option>
+          <option>Minimal</option>
+          <option>Corporate</option>
+          <option>Neon</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PREVIEW -->
+<section class="page" id="preview">
+  <div class="pageHead">
+    <div><h2>Live Preview</h2><p>ตัวอย่างหน้าเว็บฝั่งผู้ใช้งาน</p></div>
+    <button class="secondary" onclick="renderPreview()">↻ Refresh Preview</button>
+  </div>
+
+  <div class="previewShell">
+    <div class="previewBrowser">
+      <div class="previewTop">
+        <div class="previewLogo" id="pvLogo">PRO PORTAL</div>
+        <div class="previewNav">
+          <span>Home</span>
+          <span>Services</span>
+          <span>News</span>
+          <span>Contact</span>
+        </div>
+      </div>
+      <div class="previewBody">
+        <div class="previewHero" id="pvHero">
+          <h1 id="pvHeroText">Welcome to our platform</h1>
+          <p>Experience a modern digital platform.</p>
+        </div>
+
+        <div class="previewCards" id="pvCards">
+          <div class="previewCard"><b>📢 Announcement</b><p>Latest information appears here.</p></div>
+          <div class="previewCard"><b>⚡ Quick Actions</b><p>Access frequently used services.</p></div>
+          <div class="previewCard"><b>📰 News</b><p>Latest news and updates.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGS -->
+<section class="page" id="logs">
+  <div class="pageHead">
+    <div><h2>Activity Logs</h2><p>ประวัติการเปลี่ยนแปลงระบบในเครื่องนี้</p></div>
+    <button class="danger secondary" onclick="clearLogs()">Clear Logs</button>
+  </div>
+  <div class="log" id="logsContainer"></div>
+</section>
+
+</div>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const defaultControls=[
+ ["hero","Hero Banner","แบนเนอร์หลักของเว็บไซต์",true],
+ ["welcome","Welcome Message","ข้อความต้อนรับผู้ใช้งาน",true],
+ ["announcement","Announcement","ประกาศสำคัญ",true],
+ ["statistics","Statistics","สถิติและตัวเลขสำคัญ",true],
+ ["quick","Quick Actions","เมนูลัด",true],
+ ["news","News Section","ข่าวสารล่าสุด",false],
+ ["featured","Featured Content","เนื้อหาแนะนำ",true],
+ ["footer","Footer","ส่วนท้ายเว็บไซต์",true]
+];
+
+const widgets=[
+ ["📊","Statistics","แสดงข้อมูลสถิติสำคัญ"],
+ ["📢","Announcement","ประกาศและข่าวสาร"],
+ ["⚡","Quick Actions","เมนูลัดสำหรับผู้ใช้งาน"],
+ ["📰","Latest News","ข่าวสารล่าสุด"],
+ ["📅","Calendar","ปฏิทินกิจกรรม"],
+ ["🔔","Notifications","การแจ้งเตือน"],
+ ["📁","Documents","เอกสารสำคัญ"],
+ ["💬","Support","ศูนย์ช่วยเหลือ"],
+ ["⭐","Featured","เนื้อหาแนะนำ"],
+ ["🔗","Quick Links","ลิงก์สำคัญ"],
+ ["📈","Performance","ข้อมูลประสิทธิภาพ"],
+ ["ℹ️","Information","ข้อมูลระบบ"]
+];
+
+let state=JSON.parse(localStorage.getItem("proControlState")||"null")||{
+ controls:Object.fromEntries(defaultControls.map(x=>[x[0],x[3]])),
+ siteName:"PRO PORTAL",
+ heroText:"Welcome to our platform",
+ color:"#2563eb",
+ logs:[]
+};
+
+function saveState(){
+ localStorage.setItem("proControlState",JSON.stringify(state));
+}
+
+function addLog(text){
+ state.logs.unshift({
+  text,
+  time:new Date().toLocaleString("th-TH")
+ });
+ state.logs=state.logs.slice(0,50);
+ saveState();
+ renderLogs();
+}
+
+function showToast(text){
+ const t=document.getElementById("toast");
+ t.textContent=text;
+ t.classList.add("show");
+ setTimeout(()=>t.classList.remove("show"),2200);
+}
+
+function showPage(id,btn){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+ if(btn)btn.classList.add("active");
+
+ const titles={
+  dashboard:"Dashboard",
+  pageControl:"Page Controller",
+  widgets:"Widget Manager",
+  announcements:"Announcement Center",
+  users:"User Management",
+  analytics:"Analytics",
+  theme:"Theme Studio",
+  preview:"Live Preview",
+  logs:"Activity Logs"
+ };
+ document.getElementById("topTitle").textContent=titles[id]||"Dashboard";
+ renderPreview();
+ if(innerWidth<760)document.getElementById("sidebar").classList.remove("open");
+}
+
+function toggleMenu(){
+ document.getElementById("sidebar").classList.toggle("open");
+}
+
+function renderControls(){
+ const box=document.getElementById("controls");
+ box.innerHTML="";
+ defaultControls.forEach(item=>{
+  const [id,name,desc]=item;
+  const el=document.createElement("div");
+  el.className="controlItem";
+  el.innerHTML=`
+   <div class="controlInfo">
+    <b>${name}</b>
+    <p>${desc}</p>
+   </div>
+   <button class="toggle ${state.controls[id]?"on":""}" onclick="toggleControl('${id}',this)">
+    <i></i>
+   </button>
+  `;
+  box.appendChild(el);
+ });
+}
+
+function toggleControl(id,el){
+ state.controls[id]=!state.controls[id];
+ el.classList.toggle("on",state.controls[id]);
+ renderPreview();
+}
+
+function saveControls(){
+ saveState();
+ addLog("บันทึก Page Controller Configuration");
+ showToast("✓ Configuration saved");
+ renderPreview();
+}
+
+function renderWidgets(){
+ const box=document.getElementById("widgetGrid");
+ box.innerHTML="";
+ widgets.forEach((w,i)=>{
+  const el=document.createElement("div");
+  el.className="widget";
+  el.innerHTML=`
+   <div class="widgetTop">
+    <div class="widgetIcon">${w[0]}</div>
+    <button class="toggle ${i<10?"on":""}" onclick="this.classList.toggle('on');updateWidgetCount()"><i></i></button>
+   </div>
+   <h4>${w[1]}</h4>
+   <p>${w[2]}</p>
+  `;
+  box.appendChild(el);
+ });
+}
+
+function updateWidgetCount(){
+ const count=document.querySelectorAll("#widgetGrid .toggle.on").length;
+ document.getElementById("widgetCount").textContent=count;
+ addLog("เปลี่ยนสถานะ Widget");
+}
+
+function openAnnouncement(){
+ const title=prompt("ชื่อประกาศ:");
+ if(!title)return;
+ addLog("สร้างประกาศ: "+title);
+ showToast("✓ สร้างประกาศแล้ว");
+ renderAnnouncements();
+}
+
+function renderAnnouncements(){
+ document.getElementById("announcementTable").innerHTML=`
+ <tr>
+  <td><b>ระบบจะมีการปรับปรุงในวันเสาร์</b></td>
+  <td><span class="badge green">PUBLISHED</span></td>
+  <td>Everyone</td><td>Today</td>
+  <td><button class="secondary" onclick="showToast('เปิดประกาศ')">View</button></td>
+ </tr>
+ <tr>
+  <td><b>Welcome to the new platform</b></td>
+  <td><span class="badge blue">SCHEDULED</span></td>
+  <td>Members</td><td>Tomorrow</td>
+  <td><button class="secondary" onclick="showToast('เปิดประกาศ')">View</button></td>
+ </tr>
+ <tr>
+  <td><b>Important service information</b></td>
+  <td><span class="badge yellow">DRAFT</span></td>
+  <td>Staff</td><td>Yesterday</td>
+  <td><button class="secondary">Edit</button></td>
+ </tr>
+ `;
+}
+
+function saveTheme(){
+ state.siteName=document.getElementById("siteName").value||"PRO PORTAL";
+ state.heroText=document.getElementById("heroText").value||"Welcome";
+ state.color=document.getElementById("themeColor").value;
+ saveState();
+ addLog("อัปเดต Theme Studio");
+ showToast("✓ Theme applied");
+ renderPreview();
+}
+
+function renderPreview(){
+ document.getElementById("pvLogo").textContent=state.siteName;
+ document.getElementById("pvHeroText").textContent=state.heroText;
+ document.getElementById("pvHero").style.background=
+ `linear-gradient(135deg,${state.color},#06b6d4)`;
+
+ const cards=document.getElementById("pvCards");
+ cards.style.display="grid";
+
+ const c=state.controls;
+
+ if(!c.announcement &&
+    !c.quick &&
+    !c.news &&
+    !c.statistics &&
+    !c.featured){
+   cards.innerHTML='<div class="previewCard"><b>หน้าเว็บว่าง</b><p>พนักงานยังไม่ได้เปิด Component ใด ๆ</p></div>';
+   return;
+ }
+
+ cards.innerHTML="";
+
+ if(c.announcement)
+ cards.innerHTML+=`<div class="previewCard"><b>📢 Announcement</b><p>Latest information appears here.</p></div>`;
+
+ if(c.quick)
+ cards.innerHTML+=`<div class="previewCard"><b>⚡ Quick Actions</b><p>Access frequently used services.</p></div>`;
+
+ if(c.news)
+ cards.innerHTML+=`<div class="previewCard"><b>📰 News</b><p>Latest news and updates.</p></div>`;
+
+ if(c.statistics)
+ cards.innerHTML+=`<div class="previewCard"><b>📊 Statistics</b><p>12,480 users · 98.4% uptime</p></div>`;
+
+ if(c.featured)
+ cards.innerHTML+=`<div class="previewCard"><b>⭐ Featured Content</b><p>Recommended content for users.</p></div>`;
+}
+
+function renderLogs(){
+ const box=document.getElementById("logsContainer");
+ if(!state.logs.length){
+  box.innerHTML=`<div class="card" style="text-align:center;color:#667085">ยังไม่มี Activity Log</div>`;
+  return;
+ }
+ box.innerHTML=state.logs.map(x=>`
+  <div class="logItem">
+   ${x.text}
+   <span>${x.time}</span>
+  </div>
+ `).join("");
+}
+
+function clearLogs(){
+ state.logs=[];
+ saveState();
+ renderLogs();
+ showToast("ล้าง Activity Logs แล้ว");
+}
+
+function exportSettings(){
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);
+ a.download="pro-control-settings.json";
+ a.click();
+ URL.revokeObjectURL(a.href);
+ addLog("Export Settings");
+ showToast("✓ Export สำเร็จ");
+}
+
+function importSettings(){
+ const input=document.createElement("input");
+ input.type="file";
+ input.accept=".json";
+ input.onchange=e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+   try{
+    state=JSON.parse(reader.result);
+    saveState();
+    loadAll();
+    addLog("Import Settings");
+    showToast("✓ Import สำเร็จ");
+   }catch{
+    showToast("ไฟล์ไม่ถูกต้อง");
+   }
+  };
+  reader.readAsText(file);
+ };
+ input.click();
+}
+
+function resetAll(){
+ if(!confirm("ต้องการ Reset ระบบทั้งหมดหรือไม่?"))return;
+ localStorage.removeItem("proControlState");
+ location.reload();
+}
+
+function loadAll(){
+ renderControls();
+ renderWidgets();
+ renderAnnouncements();
+ renderLogs();
+
+ document.getElementById("siteName").value=state.siteName;
+ document.getElementById("heroText").value=state.heroText;
+ document.getElementById("themeColor").value=state.color;
+
+ renderPreview();
+}
+
+loadAll();
+</script>
+
+</body>
+</html>
