@@ -1,1032 +1,533 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>PRO CONTROL — Employee Center</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เรือนแม่หมอ – จองคิวดูดวง</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;700&family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#070b14;
-  --panel:#0d1320;
-  --panel2:#111a2b;
-  --line:#1e2b42;
-  --text:#eef4ff;
-  --muted:#7f8da6;
-  --blue:#3b82f6;
-  --cyan:#22d3ee;
-  --green:#22c55e;
-  --red:#ef4444;
-  --yellow:#f59e0b;
-  --radius:18px;
-}
-body{
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer;border:0}
-.app{display:flex;min-height:100vh}
+:root{--bg:#f7f2ff;--ink:#241539;--mute:#6b5d82;--card:#ffffff;--line:#ddd2ee;--gold:#a8680a;--goldbg:#f6e3b8;--jade:#0f7a62;--btn:#2b1748;--btnink:#fff;--glow:#e9dcff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#150a26;--ink:#f1eafc;--mute:#b3a4cc;--card:#21123a;--line:#3a2860;--gold:#f2b84b;--goldbg:#3b2a10;--jade:#5fd1b0;--btn:#f2b84b;--btnink:#2a1a04;--glow:#2c1857}}
+:root[data-theme="dark"]{--bg:#150a26;--ink:#f1eafc;--mute:#b3a4cc;--card:#21123a;--line:#3a2860;--gold:#f2b84b;--goldbg:#3b2a10;--jade:#5fd1b0;--btn:#f2b84b;--btnink:#2a1a04;--glow:#2c1857}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.7 "Noto Sans Thai",system-ui,sans-serif}
+h1,h2,h3{font-family:"Noto Serif Thai",Georgia,serif;line-height:1.35;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+.hero{padding:56px 0 36px;background:radial-gradient(ellipse 60% 80% at 80% 0,var(--glow),transparent 70%)}
+.hero h1{font-size:clamp(32px,6vw,56px);font-weight:700;max-width:14em}
+.hero p{max-width:34em;color:var(--mute);margin:16px 0 0}
+.deck{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
+.tcard{width:74px;height:112px;border:1.5px solid var(--gold);border-radius:10px;background:var(--card);display:grid;place-items:center;font-family:"Noto Serif Thai",serif;font-size:13px;color:var(--gold);cursor:pointer;padding:6px;text-align:center;transition:transform .35s}
+.tcard:hover,.tcard:focus-visible{transform:translateY(-6px) rotate(-2deg)}
+.tcard.open{background:var(--goldbg);color:var(--ink)}
+#omen{min-height:2.2em;margin-top:14px;color:var(--gold);font-weight:500}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 22px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink);padding:7px 14px;border-radius:99px;font:inherit;font-size:14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--btn);color:var(--btnink);border-color:var(--btn)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;padding-bottom:40px}
+.reader{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.reader .top{display:flex;gap:14px;align-items:center}
+.av{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font:700 22px "Noto Serif Thai",serif;background:var(--goldbg);color:var(--gold);flex:none}
+.reader h3{font-size:19px}
+.sub{color:var(--mute);font-size:14px}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:13px;padding:2px 10px;border-radius:99px;background:var(--glow)}
+.row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px}
+.price{font-weight:600}
+.price small{color:var(--mute);font-weight:400}
+.btn{border:0;background:var(--btn);color:var(--btnink);font:600 15px "Noto Sans Thai",sans-serif;padding:10px 18px;border-radius:10px;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+:focus-visible{outline:3px solid var(--jade);outline-offset:2px}
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);padding:0;width:min(520px,calc(100% - 24px));max-height:calc(100% - 24px)}
+dialog::backdrop{background:rgba(10,4,24,.6)}
+.dl{padding:24px;display:grid;gap:14px}
+.dl h2{font-size:22px}
+label{font-size:14px;color:var(--mute);display:grid;gap:4px}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.slot{padding:8px 0;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.slot[aria-pressed="true"]{background:var(--btn);color:var(--btnink);border-color:var(--btn)}
+.slot:disabled{text-decoration:line-through;color:var(--mute);opacity:.5;cursor:not-allowed}
+.days{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.days .slot{min-width:72px;line-height:1.3;padding:8px 6px}
+.acts{display:flex;gap:10px;justify-content:flex-end}
+.err{color:#c0392b;font-size:14px;min-height:1.4em}
+.mine{border-top:1px solid var(--line);padding:28px 0 48px}
+.mine h2{font-size:22px;margin-bottom:12px}
+.bk{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line)}
+.bk b{font-weight:600}
+.empty{color:var(--mute)}
+footer{color:var(--mute);font-size:13px;padding:0 0 32px}
+@media (prefers-reduced-motion:reduce){.tcard{transition:none}}
 
-/* SIDEBAR */
-.sidebar{
-  width:260px;
-  background:#090e19;
-  border-right:1px solid var(--line);
-  padding:22px 15px;
-  position:fixed;
-  inset:0 auto 0 0;
-  z-index:20;
-}
-.logo{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:5px 10px 28px;
-}
-.logoIcon{
-  width:40px;height:40px;border-radius:13px;
-  background:linear-gradient(135deg,var(--blue),var(--cyan));
-  display:grid;place-items:center;
-  font-weight:900;color:white;
-  box-shadow:0 0 30px #1683ff33;
-}
-.logo b{font-size:17px}
-.logo span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
-.sectionLabel{
-  color:#53627c;font-size:10px;font-weight:800;
-  letter-spacing:1.4px;padding:10px 12px;
-}
-.nav{display:flex;flex-direction:column;gap:4px}
-.nav button{
-  width:100%;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:12px 13px;
-  background:transparent;
-  color:#93a2ba;
-  border-radius:12px;
-  text-align:left;
-  transition:.2s;
-}
-.nav button:hover{background:#111a2b;color:white}
-.nav button.active{
-  background:linear-gradient(90deg,#172b4e,#102039);
-  color:#fff;
-  box-shadow:inset 3px 0 var(--blue);
-}
-.navIcon{width:22px;text-align:center}
-.sideBottom{
-  position:absolute;
-  bottom:18px;
-  left:15px;right:15px;
-}
-.systemBox{
-  background:#0d1524;
-  border:1px solid var(--line);
-  padding:13px;
-  border-radius:14px;
-}
-.systemTop{display:flex;justify-content:space-between;font-size:12px}
-.online{color:var(--green)}
-.dot{
-  display:inline-block;width:7px;height:7px;
-  background:var(--green);border-radius:50%;
-  margin-right:6px;box-shadow:0 0 10px var(--green);
-}
+.hero{position:relative;overflow:hidden;background:radial-gradient(1.5px 1.5px at 12% 28%,var(--gold) 50%,transparent 52%),radial-gradient(1.5px 1.5px at 34% 70%,var(--gold) 50%,transparent 52%),radial-gradient(2px 2px at 58% 22%,var(--gold) 50%,transparent 52%),radial-gradient(1.5px 1.5px at 72% 62%,var(--gold) 50%,transparent 52%),radial-gradient(2px 2px at 90% 36%,var(--gold) 50%,transparent 52%),radial-gradient(ellipse 70% 90% at 85% 0,var(--glow),transparent 70%);padding:24px 0 44px}
+.hero::after{content:"";position:absolute;right:7%;top:70px;width:110px;height:110px;border-radius:50%;box-shadow:inset -24px 8px 0 0 var(--gold);opacity:.4;pointer-events:none}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:36px;flex-wrap:wrap}
+.brand{font:700 20px "Noto Serif Thai",serif;color:var(--gold)}
+.who{display:flex;gap:10px;align-items:center;font-size:14px;color:var(--mute)}
+.who .btn{padding:6px 12px;font-size:13px}
+.hero h1{font-size:clamp(34px,6.4vw,60px);letter-spacing:-.01em}
+.notice{display:flex;gap:12px;align-items:flex-start;background:var(--goldbg);border:1px solid var(--gold);border-radius:12px;padding:12px 16px;margin:0 0 22px;font-size:15px}
+.notice::before{content:"⏳";font-size:20px;line-height:1.4}
+.warn{margin-top:6px;padding:6px 10px;border-radius:8px;background:var(--goldbg);color:var(--ink);font-size:14px;border-left:3px solid var(--gold)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.toolbar input{flex:1 1 220px}
+.toolbar select{flex:0 1 190px;width:auto}
+.reader{border-radius:20px;padding:22px;position:relative;box-shadow:0 10px 30px -18px var(--ink);transition:transform .2s,border-color .2s}
+.reader:hover{transform:translateY(-3px);border-color:var(--gold)}
+.av{width:60px;height:60px;box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--gold)}
+.rate{font-size:14px;color:var(--gold);font-weight:600}
+.rate small{color:var(--mute);font-weight:400}
+.heart{position:absolute;right:14px;top:14px;border:0;background:transparent;font-size:22px;color:var(--line);cursor:pointer;line-height:1}
+.heart[aria-pressed="true"]{color:#e0457b}
+.tag{background:var(--glow);color:var(--ink)}
+.btn{border-radius:12px;padding:11px 20px}
+dialog{box-shadow:0 30px 80px -20px #000}
+#login .dl{text-align:left}
+#login p{margin:0;color:var(--mute);font-size:15px}
 
-/* MAIN */
-.main{margin-left:260px;width:calc(100% - 260px)}
-.topbar{
-  height:72px;border-bottom:1px solid var(--line);
-  background:#080d17dd;backdrop-filter:blur(15px);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 28px;position:sticky;top:0;z-index:15;
-}
-.pageTitle h1{font-size:19px}
-.pageTitle p{font-size:11px;color:var(--muted);margin-top:3px}
-.topActions{display:flex;gap:9px;align-items:center}
-.iconBtn,.userBtn{
-  height:40px;border:1px solid var(--line);
-  background:#0d1524;color:#cbd5e1;
-  border-radius:11px;padding:0 13px;
-}
-.iconBtn:hover,.userBtn:hover{border-color:#35547e;background:#111c30}
-.userBtn{display:flex;align-items:center;gap:9px}
-.avatar{
-  width:27px;height:27px;border-radius:9px;
-  background:linear-gradient(135deg,#2563eb,#06b6d4);
-  display:grid;place-items:center;font-size:11px;font-weight:bold;
-}
-.content{padding:25px}
+[hidden]{display:none!important}
+.tabs{display:flex;gap:8px}
+#intro{position:fixed;inset:0;z-index:50;background:radial-gradient(ellipse at 50% 38%,#1b0a3a 0,#07020f 62%,#000 100%);color:#f1eafc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:env(safe-area-inset-top,0px) 20px env(safe-area-inset-bottom,0px);transition:opacity .8s}
+#intro.out{opacity:0;pointer-events:none}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+.rahu{position:relative;width:min(240px,56vw);aspect-ratio:1;margin-bottom:10px}
+.corona{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,transparent 56%,#f2b84b 58%,rgba(242,184,75,.28) 64%,rgba(242,184,75,.08) 72%,transparent 76%);animation:spin 60s linear infinite;box-shadow:0 0 70px 6px rgba(242,184,75,.25)}
+.orb{position:absolute;inset:11%;border-radius:50%;background:#000;box-shadow:0 0 36px 10px #000;animation:drift 14s ease-in-out infinite alternate}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drift{from{transform:translate(-9%,5%)}to{transform:translate(9%,-5%)}}
+.itx{position:relative;max-width:30em}
+.itx h1{font:700 clamp(54px,14vw,96px)/1.1 "Noto Serif Thai",serif;color:#f2b84b;letter-spacing:.02em;text-shadow:0 0 30px rgba(242,184,75,.35)}
+.itx p{color:#c9bbe3;margin:10px 0 26px;font-size:17px}
+.itx .btn{background:#f2b84b;color:#2a1a04;font-size:17px;padding:13px 28px}
+.lnk{display:block;margin:14px auto 0;background:none;border:0;color:#b3a4cc;font:inherit;font-size:14px;text-decoration:underline;cursor:pointer}
+.hint{margin-top:18px;font-size:13px;color:#8d7fa8}
+@media (prefers-reduced-motion:reduce){.corona,.orb{animation:none}#intro{transition:none}}
 
-/* PAGES */
-.page{display:none;animation:fade .25s ease}
-.page.active{display:block}
-@keyframes fade{
-  from{opacity:0;transform:translateY(5px)}
-  to{opacity:1;transform:none}
-}
-.pageHead{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:20px;
-}
-.pageHead h2{font-size:22px}
-.pageHead p{color:var(--muted);font-size:12px;margin-top:5px}
-.primary{
-  background:linear-gradient(135deg,#2563eb,#0891b2);
-  color:white;padding:11px 16px;border-radius:11px;
-  font-weight:700;box-shadow:0 8px 25px #1677ff22;
-}
-.secondary{
-  background:#111a2a;color:#cbd5e1;
-  border:1px solid var(--line);padding:10px 15px;border-radius:11px;
-}
-.danger{background:#35151a;color:#ff9292;border:1px solid #61232b}
+#intro{background:radial-gradient(ellipse at 50% 38%,#10402f 0,#071c12 62%,#020a06 100%)}
+.tree{width:min(190px,48vw);margin-bottom:8px;position:relative;filter:drop-shadow(0 0 24px rgba(242,184,75,.25))}
+.star{animation:tw 2.4s ease-in-out infinite;transform-origin:60px 18px}
+@keyframes tw{50%{opacity:.55}}
+.itx h1{font-size:clamp(40px,10.5vw,78px);color:#f6d58a}
+.itx .btn{background:#d6342f;color:#fff}
+@media (prefers-reduced-motion:reduce){.star{animation:none}}
 
-/* STATS */
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;margin-bottom:18px;
-}
-.stat{
-  background:linear-gradient(145deg,#0d1524,#0a111e);
-  border:1px solid var(--line);
-  border-radius:17px;padding:18px;
-  position:relative;overflow:hidden;
-}
-.stat:after{
-  content:"";position:absolute;width:80px;height:80px;
-  right:-30px;top:-30px;border-radius:50%;
-  background:#2475ff13;
-}
-.statTop{display:flex;justify-content:space-between}
-.statIcon{
-  width:36px;height:36px;border-radius:10px;
-  background:#142542;display:grid;place-items:center;
-}
-.stat small{color:var(--muted);font-size:11px}
-.stat h3{font-size:27px;margin:9px 0 4px}
-.trend{font-size:11px;color:var(--green)}
-.trend.down{color:var(--red)}
+.sitetop{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.sitetop .bar{margin:0;padding:10px 0 4px}
+.rt{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.brand{text-decoration:none}
+.nav{display:flex;gap:4px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+.nav a{white-space:nowrap;padding:7px 14px;border-radius:99px;color:var(--mute);text-decoration:none;font-size:15px}
+.nav a[aria-current="page"]{background:var(--btn);color:var(--btnink);font-weight:600}
+.hero{padding:44px 0 52px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.cta .btn{text-decoration:none;display:inline-block}
+.sec{font-size:26px;margin:36px 0 14px}
+.promoban{display:block;margin-top:28px;padding:14px 18px;border-radius:14px;background:linear-gradient(100deg,#9c1f2a,#1f6b45);color:#fff;text-decoration:none}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:48px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;display:grid;gap:4px}
+.step span{color:var(--mute);font-size:15px}
+.ticket{background:var(--card);border:2px dashed var(--gold);border-radius:16px;padding:20px;display:grid;gap:8px}
+.ticket .code{font:700 26px "Noto Serif Thai",serif;color:var(--gold);letter-spacing:.06em}
+.rform{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.rform input{flex:1 1 220px;width:auto}.rform select{width:auto}
+.rev{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.rev .st{color:var(--gold)}
+.dres{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;display:grid;gap:10px;max-width:560px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:middle;margin-right:6px}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600}
+details p{margin:8px 0 0;color:var(--mute)}
+.foot{border-top:1px solid var(--line);margin-top:40px;padding:24px 0 32px;color:var(--mute);font-size:14px}
+.foot .wrap{display:grid;gap:10px;justify-items:start}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--btn);color:var(--btnink);padding:10px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:.25s;z-index:60;font-weight:600}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.mine{border:0}
 
-/* GRID */
-.grid2{display:grid;grid-template-columns:1.45fr 1fr;gap:16px}
-.card{
-  background:#0d1523;
-  border:1px solid var(--line);
-  border-radius:17px;
-  padding:18px;
-}
-.cardHead{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:17px;
-}
-.cardHead h3{font-size:14px}
-.cardHead span{font-size:11px;color:var(--muted)}
-.activity{display:flex;flex-direction:column}
-.activityItem{
-  display:flex;gap:12px;padding:13px 0;
-  border-bottom:1px solid #182338;
-}
-.activityItem:last-child{border:0}
-.activityIcon{
-  width:34px;height:34px;border-radius:10px;
-  background:#15223a;display:grid;place-items:center;
-}
-.activityText{flex:1}
-.activityText b{font-size:12px}
-.activityText p{font-size:10px;color:var(--muted);margin-top:4px}
-.time{font-size:10px;color:#53627c}
-
-/* MINI CHART */
-.chart{
-  height:180px;display:flex;align-items:end;gap:10px;
-  padding:15px 5px 0;
-}
-.bar{
-  flex:1;border-radius:7px 7px 2px 2px;
-  background:linear-gradient(to top,var(--blue),var(--cyan));
-  min-height:15px;opacity:.85;
-}
-.chartLabels{display:flex;justify-content:space-between;color:#53627c;font-size:9px}
-
-/* TABLE */
-.tableWrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:650px}
-th{
-  color:#64748b;text-align:left;font-size:10px;
-  text-transform:uppercase;letter-spacing:.6px;
-  padding:12px;border-bottom:1px solid var(--line);
-}
-td{
-  padding:14px 12px;border-bottom:1px solid #182338;
-  font-size:12px;
-}
-.badge{
-  padding:5px 8px;border-radius:7px;
-  font-size:9px;font-weight:800;
-}
-.green{background:#0d2b1b;color:#54dc89}
-.red{background:#32151b;color:#ff7c8a}
-.yellow{background:#31250f;color:#f9c94d}
-.blue{background:#102643;color:#65a9ff}
-
-/* CONTROL */
-.controlGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.controlItem{
-  border:1px solid var(--line);
-  background:#0b1320;
-  padding:17px;border-radius:14px;
-  display:flex;align-items:center;gap:14px;
-}
-.controlInfo{flex:1}
-.controlInfo b{font-size:12px}
-.controlInfo p{font-size:10px;color:var(--muted);margin-top:4px}
-.toggle{
-  width:46px;height:25px;border-radius:20px;
-  background:#263246;padding:3px;
-  transition:.2s;flex-shrink:0;
-}
-.toggle i{
-  display:block;width:19px;height:19px;border-radius:50%;
-  background:#8a98ad;transition:.2s;
-}
-.toggle.on{background:#1763d1}
-.toggle.on i{transform:translateX(21px);background:white}
-
-/* FORMS */
-.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.field{display:flex;flex-direction:column;gap:7px}
-.field.full{grid-column:1/-1}
-.field label{font-size:11px;color:#9aa8bd}
-.field input,.field textarea,.field select{
-  background:#09111e;border:1px solid var(--line);
-  color:white;padding:11px 12px;border-radius:10px;
-  outline:none;
-}
-.field textarea{min-height:110px;resize:vertical}
-.field input:focus,.field textarea:focus,.field select:focus{
-  border-color:#316bc0;box-shadow:0 0 0 3px #2463b51a;
-}
-
-/* WIDGETS */
-.widgetGrid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
-}
-.widget{
-  border:1px solid var(--line);background:#0b1320;
-  border-radius:15px;padding:17px;
-}
-.widgetTop{display:flex;justify-content:space-between}
-.widgetIcon{
-  width:40px;height:40px;border-radius:11px;
-  background:#142541;display:grid;place-items:center;
-}
-.widget h4{margin-top:13px;font-size:13px}
-.widget p{font-size:10px;color:var(--muted);margin-top:5px}
-
-/* PREVIEW */
-.previewShell{
-  background:#05080e;border:1px solid var(--line);
-  border-radius:18px;padding:12px;
-}
-.previewBrowser{
-  border:1px solid #1d293d;border-radius:12px;overflow:hidden;
-  background:#fff;color:#111;min-height:520px;
-}
-.previewTop{
-  height:48px;background:#fff;border-bottom:1px solid #ddd;
-  display:flex;align-items:center;padding:0 16px;gap:10px;
-}
-.previewLogo{font-weight:900;color:#2563eb}
-.previewNav{margin-left:auto;display:flex;gap:14px;font-size:11px;color:#667085}
-.previewBody{padding:25px;min-height:470px}
-.previewHero{
-  background:linear-gradient(135deg,#2563eb,#06b6d4);
-  color:white;border-radius:18px;padding:30px;
-}
-.previewHero h1{font-size:27px}
-.previewHero p{margin-top:8px;opacity:.85;font-size:12px}
-.previewCards{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:12px;margin-top:15px;
-}
-.previewCard{
-  border:1px solid #e4e7ec;padding:17px;border-radius:13px;
-}
-.previewCard b{font-size:12px}
-.previewCard p{font-size:10px;color:#667085;margin-top:5px}
-
-/* LOG */
-.log{
-  display:flex;flex-direction:column;gap:8px;
-}
-.logItem{
-  padding:13px;background:#0a121f;border:1px solid var(--line);
-  border-radius:11px;font-size:11px;
-}
-.logItem span{color:var(--muted);font-size:9px;display:block;margin-top:4px}
-
-/* TOAST */
-.toast{
-  position:fixed;right:22px;bottom:22px;
-  background:#111c2d;border:1px solid #29405f;
-  color:white;padding:13px 17px;border-radius:12px;
-  box-shadow:0 20px 50px #0008;
-  transform:translateY(100px);opacity:0;
-  transition:.3s;z-index:100;
-  font-size:12px;
-}
-.toast.show{transform:none;opacity:1}
-
-/* MOBILE */
-.mobileMenu{display:none}
-@media(max-width:1050px){
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .grid2{grid-template-columns:1fr}
-  .widgetGrid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:760px){
-  .sidebar{
-    transform:translateX(-100%);
-    transition:.25s;
-  }
-  .sidebar.open{transform:none}
-  .main{margin-left:0;width:100%}
-  .mobileMenu{display:block}
-  .content{padding:15px}
-  .topbar{padding:0 15px}
-  .stats{grid-template-columns:1fr 1fr}
-  .controlGrid,.formGrid{grid-template-columns:1fr}
-  .widgetGrid{grid-template-columns:1fr}
-  .previewCards{grid-template-columns:1fr}
-  .topActions .hideMobile{display:none}
-}
-@media(max-width:450px){
-  .stats{grid-template-columns:1fr}
-  .pageHead{align-items:flex-start;gap:10px}
-}
+.hero::after{display:none}
+.hg{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:center}
+.stage{position:relative;height:380px;min-width:0}
+.stage canvas{width:100%;height:100%;display:block}
+@media (max-width:780px){.hg{grid-template-columns:1fr}.stage{height:300px;order:-1}}
+.art{height:112px;margin:-6px -6px 6px;border-radius:14px;background:linear-gradient(135deg,var(--glow),var(--goldbg));display:grid;place-items:center;overflow:hidden}
+.art svg{height:100%;width:100%}
+.art .p{fill:#6a4bc4}.art .fc{fill:var(--card);stroke:var(--gold);stroke-width:2}
+.art .g{fill:none;stroke:var(--gold);stroke-width:1.6}.art .f{fill:var(--gold)}
+.art .t{fill:var(--gold);font:700 26px "Noto Serif Thai",serif}
+.heart{color:var(--mute)}
 </style>
 </head>
-
 <body>
+<div id="intro" role="dialog" aria-label="หน้าต้อนรับคริสต์มาส">
+<canvas id="cv" aria-hidden="true"></canvas>
+<svg class="tree" viewBox="0 0 120 150" aria-hidden="true"><polygon points="60,24 90,64 30,64" fill="#1f7a4a"/><polygon points="60,44 100,98 20,98" fill="#27905a"/><polygon points="60,70 108,130 12,130" fill="#2fa86a"/><rect x="54" y="130" width="12" height="16" fill="#7a4a24"/><polygon class="star" points="60,3 64,14 76,14 66,21 70,33 60,26 50,33 54,21 44,14 56,14" fill="#f2b84b"/><circle cx="50" cy="82" r="4" fill="#d6342f"/><circle cx="76" cy="110" r="4" fill="#f2b84b"/><circle cx="42" cy="114" r="4" fill="#f2b84b"/><circle cx="66" cy="58" r="3.5" fill="#d6342f"/><circle cx="78" cy="86" r="3.5" fill="#6ec1ff"/></svg>
+<div class="itx"><h1>Merry Christmas</h1><p>สุขสันต์วันคริสต์มาส ดูดวงรับปีใหม่กับเหล่าแม่หมอ</p>
+<button class="btn" id="enter">เข้าสู่เว็บ</button>
+<button class="lnk" id="enterQ">เข้าแบบไม่มีเสียง</button>
+<div class="hint">เว็บนี้มีเพลงกล่องดนตรีคริสต์มาส เปิดลำโพงเบาๆ</div></div></div>
+<header class="sitetop"><div class="wrap">
+<div class="bar"><a class="brand" href="#home">🎄 เรือนแม่หมอ</a><div class="rt"><div class="who" id="who"></div><button class="btn ghost" id="snd" aria-pressed="false" aria-label="ปิดเพลงคริสต์มาส" style="padding:6px 12px">🔊</button></div></div>
+<nav class="nav" aria-label="เมนูหลัก"><a href="#home">หน้าแรก</a><a href="#readers">แม่หมอ</a><a href="#daily">ดวงรายวัน</a><a href="#promo">โปรโมชัน</a><a href="#reviews">รีวิว</a><a href="#mine">การจองของฉัน</a><a href="#faq">คำถามที่พบบ่อย</a></nav>
+</div></header>
+<main>
+<section class="page" data-p="home">
+<div class="hero"><div class="wrap hg"><div>
+<h1>ดูดวงกับแม่หมอที่ใช่ จองคิวง่าย ไม่ต้องรอนาน</h1>
+<p>เลือกศาสตร์ที่อยากรู้ เลือกแม่หมอ เลือกวันและเวลา แล้วรอรับการอนุมัติทางอีเมลหรือ LINE</p>
+<div class="cta"><a class="btn" href="#readers">จองคิวดูดวง</a><a class="btn ghost" href="#daily">ดูดวงรายวันฟรี</a></div>
+<div class="deck" id="deck" aria-label="เปิดไพ่ลองเสี่ยงทายวันนี้"></div>
+<div id="omen" aria-live="polite">แตะไพ่หนึ่งใบเพื่อรับคำทำนายสั้นๆ ประจำวัน</div>
+</div><div class="stage" id="stage"><canvas id="gl" aria-label="ภาพ 3 มิติ ลูกแก้วและไพ่ทาโรต์ลอยหมุน" role="img"></canvas></div></div></div>
+<div class="wrap">
+<a class="promoban" href="#promo"><b>🎁 โปรคริสต์มาส</b> ใช้โค้ด XMAS25 ลด 25% ทุกแม่หมอ ดูโค้ดทั้งหมด</a>
+<h2 class="sec">แม่หมอยอดนิยม</h2><div class="grid" id="feat"></div>
+<h2 class="sec">จองง่ายใน 3 ขั้นตอน</h2>
+<div class="steps"><div class="step"><b>1. เลือกแม่หมอ</b><span>ดูศาสตร์ คะแนน และราคา แล้วเลือกคนที่ถูกใจ</span></div><div class="step"><b>2. เลือกวันและเวลา</b><span>เลือกช่วงที่ว่างได้ล่วงหน้า 7 วัน</span></div><div class="step"><b>3. รอการอนุมัติคิว</b><span>แอดมินตรวจและแจ้งผลก่อนถือว่าคิวยืนยัน</span></div></div>
+</div></section>
 
-<div class="app">
+<section class="page" data-p="readers" hidden><div class="wrap">
+<h2 class="sec">เลือกแม่หมอ</h2>
+<div class="notice" role="note"><div><b>โปรดรอการอนุมัติคิว</b> การจองยังไม่ถือว่ายืนยันจนกว่าแอดมินจะอนุมัติ คุณจะเห็นสถานะในหน้า "การจองของฉัน"</div></div>
+<div class="toolbar"><input id="q" type="search" placeholder="ค้นหาชื่อ ศาสตร์ หรือเรื่องที่อยากรู้" aria-label="ค้นหาแม่หมอ"><select id="sort" aria-label="เรียงลำดับ"><option value="">เรียงตามค่าเริ่มต้น</option><option value="r">คะแนนสูงสุด</option><option value="p">ราคาต่ำสุด</option><option value="y">ประสบการณ์มากสุด</option></select></div>
+<div class="filters" id="filters" role="group" aria-label="กรองตามศาสตร์"></div>
+<div class="grid" id="grid"></div>
+</div></section>
 
-<!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-  <div class="logo">
-    <div class="logoIcon">P</div>
-    <div>
-      <b>PRO CONTROL</b>
-      <span>EMPLOYEE CENTER</span>
-    </div>
-  </div>
+<section class="page" data-p="daily" hidden><div class="wrap">
+<h2 class="sec">ดวงรายวัน</h2><p class="sub">เลือกวันเกิดของคุณ แล้วดูดวงวันนี้ ผลเปลี่ยนไปทุกวัน</p>
+<div class="toolbar"><select id="bd" aria-label="วันเกิด"><option value="0">เกิดวันอาทิตย์</option><option value="1">เกิดวันจันทร์</option><option value="2">เกิดวันอังคาร</option><option value="3">เกิดวันพุธ</option><option value="4">เกิดวันพฤหัสบดี</option><option value="5">เกิดวันศุกร์</option><option value="6">เกิดวันเสาร์</option></select><button class="btn" id="bdGo">ดูดวงวันนี้</button></div>
+<div id="dres" aria-live="polite"></div>
+</div></section>
 
-  <div class="sectionLabel">MAIN</div>
-  <div class="nav">
-    <button class="active" onclick="showPage('dashboard',this)">
-      <span class="navIcon">▦</span> Dashboard
-    </button>
-    <button onclick="showPage('pageControl',this)">
-      <span class="navIcon">◈</span> Page Controller
-    </button>
-    <button onclick="showPage('widgets',this)">
-      <span class="navIcon">◆</span> Widget Manager
-    </button>
-    <button onclick="showPage('announcements',this)">
-      <span class="navIcon">◉</span> Announcements
-    </button>
-  </div>
+<section class="page" data-p="promo" hidden><div class="wrap">
+<h2 class="sec">โปรโมชัน</h2><p class="sub">กดใช้โค้ด แล้วไปเลือกแม่หมอ ส่วนลดจะคำนวณในหน้าจองให้ (โค้ดในเว็บนี้เป็นตัวอย่าง)</p>
+<div class="grid" id="tickets"></div>
+</div></section>
 
-  <div class="sectionLabel">SYSTEM</div>
-  <div class="nav">
-    <button onclick="showPage('users',this)">
-      <span class="navIcon">♙</span> Users
-    </button>
-    <button onclick="showPage('analytics',this)">
-      <span class="navIcon">⌁</span> Analytics
-    </button>
-    <button onclick="showPage('theme',this)">
-      <span class="navIcon">✦</span> Theme Studio
-    </button>
-    <button onclick="showPage('preview',this)">
-      <span class="navIcon">⊙</span> Live Preview
-    </button>
-    <button onclick="showPage('logs',this)">
-      <span class="navIcon">≡</span> Activity Logs
-    </button>
-  </div>
+<section class="page" data-p="reviews" hidden><div class="wrap">
+<h2 class="sec">รีวิวจากผู้ใช้</h2><p class="sub" id="rsum"></p>
+<form class="rform" id="rf" novalidate><select id="rr" aria-label="แม่หมอที่ดู"></select><select id="rs" aria-label="คะแนน"><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select><input id="rt" placeholder="เล่าประสบการณ์สั้นๆ" aria-label="ข้อความรีวิว"><button class="btn" type="submit">ส่งรีวิว</button></form>
+<div id="rlist"></div><p class="sub">รีวิวที่มีป้าย "ตัวอย่าง" เป็นข้อมูลสมมติ รีวิวที่คุณเขียนเก็บในเบราว์เซอร์นี้เท่านั้น</p>
+</div></section>
 
-  <div class="sectionLabel">TOOLS</div>
-  <div class="nav">
-    <button onclick="exportSettings()">
-      <span class="navIcon">⇩</span> Export Settings
-    </button>
-    <button onclick="importSettings()">
-      <span class="navIcon">⇧</span> Import Settings
-    </button>
-    <button onclick="resetAll()">
-      <span class="navIcon">↻</span> Reset System
-    </button>
-  </div>
+<section class="page" data-p="mine" hidden><div class="wrap">
+<h2 class="sec">การจองของฉัน</h2>
+<div class="notice" role="note"><div><b>โปรดรอการอนุมัติคิว</b> สถานะจะเปลี่ยนจาก "รออนุมัติ" เมื่อแอดมินตรวจแล้ว</div></div>
+<div id="mine"></div>
+</div></section>
 
-  <div class="sideBottom">
-    <div class="systemBox">
-      <div class="systemTop">
-        <span>System Status</span>
-        <span class="online"><span class="dot"></span>ONLINE</span>
-      </div>
-      <div style="font-size:9px;color:#53627c;margin-top:7px">
-        Local Mode • No Database
-      </div>
-    </div>
-  </div>
-</aside>
-
-<!-- MAIN -->
-<main class="main">
-
-<header class="topbar">
-  <div class="pageTitle">
-    <button class="iconBtn mobileMenu" onclick="toggleMenu()">☰</button>
-    <span id="mobileGap"></span>
-    <div style="display:inline-block">
-      <h1 id="topTitle">Dashboard</h1>
-      <p>Employee Control Center</p>
-    </div>
-  </div>
-
-  <div class="topActions">
-    <button class="iconBtn hideMobile" onclick="showToast('ไม่มีการแจ้งเตือนใหม่')">🔔</button>
-    <button class="iconBtn hideMobile" onclick="showPage('preview',document.querySelectorAll('.nav button')[7])">👁</button>
-    <button class="userBtn">
-      <div class="avatar">AD</div>
-      <span class="hideMobile">Administrator</span>
-      <span>⌄</span>
-    </button>
-  </div>
-</header>
-
-<div class="content">
-
-<!-- DASHBOARD -->
-<section class="page active" id="dashboard">
-  <div class="pageHead">
-    <div>
-      <h2>Good morning, Administrator 👋</h2>
-      <p>นี่คือภาพรวมของระบบวันนี้</p>
-    </div>
-    <button class="primary" onclick="showToast('Dashboard ถูกอัปเดตแล้ว')">↻ Refresh</button>
-  </div>
-
-  <div class="stats">
-    <div class="stat">
-      <div class="statTop"><small>ACTIVE USERS</small><div class="statIcon">👥</div></div>
-      <h3>1,284</h3><span class="trend">↗ +12.8%</span>
-    </div>
-    <div class="stat">
-      <div class="statTop"><small>PAGE VIEWS</small><div class="statIcon">◉</div></div>
-      <h3>8,492</h3><span class="trend">↗ +8.4%</span>
-    </div>
-    <div class="stat">
-      <div class="statTop"><small>ACTIVE WIDGETS</small><div class="statIcon">◆</div></div>
-      <h3 id="widgetCount">12</h3><span class="trend">● Stable</span>
-    </div>
-    <div class="stat">
-      <div class="statTop"><small>ALERTS</small><div class="statIcon">!</div></div>
-      <h3>03</h3><span class="trend down">↘ -4.2%</span>
-    </div>
-  </div>
-
-  <div class="grid2">
-    <div class="card">
-      <div class="cardHead">
-        <h3>Usage Overview</h3>
-        <span>Last 7 days</span>
-      </div>
-      <div class="chart">
-        <div class="bar" style="height:44%"></div>
-        <div class="bar" style="height:58%"></div>
-        <div class="bar" style="height:52%"></div>
-        <div class="bar" style="height:75%"></div>
-        <div class="bar" style="height:66%"></div>
-        <div class="bar" style="height:91%"></div>
-        <div class="bar" style="height:82%"></div>
-      </div>
-      <div class="chartLabels">
-        <span>MON</span><span>TUE</span><span>WED</span>
-        <span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="cardHead">
-        <h3>Live Activity</h3>
-        <span>Real-time</span>
-      </div>
-      <div class="activity">
-        <div class="activityItem">
-          <div class="activityIcon">🔐</div>
-          <div class="activityText"><b>Administrator logged in</b><p>Security system</p></div>
-          <span class="time">now</span>
-        </div>
-        <div class="activityItem">
-          <div class="activityIcon">🎨</div>
-          <div class="activityText"><b>Theme configuration updated</b><p>Appearance</p></div>
-          <span class="time">2m</span>
-        </div>
-        <div class="activityItem">
-          <div class="activityIcon">📢</div>
-          <div class="activityText"><b>Announcement published</b><p>Content Manager</p></div>
-          <span class="time">8m</span>
-        </div>
-        <div class="activityItem">
-          <div class="activityIcon">👤</div>
-          <div class="activityText"><b>User session started</b><p>User Management</p></div>
-          <span class="time">12m</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PAGE CONTROL -->
-<section class="page" id="pageControl">
-  <div class="pageHead">
-    <div><h2>Page Controller</h2><p>ควบคุมองค์ประกอบที่จะแสดงบนฝั่งผู้ใช้งาน</p></div>
-    <button class="primary" onclick="saveControls()">✓ Save Configuration</button>
-  </div>
-
-  <div class="card">
-    <div class="cardHead">
-      <h3>HOME PAGE COMPONENTS</h3>
-      <span>LIVE CONFIGURATION</span>
-    </div>
-    <div class="controlGrid" id="controls"></div>
-  </div>
-</section>
-
-<!-- WIDGETS -->
-<section class="page" id="widgets">
-  <div class="pageHead">
-    <div><h2>Widget Manager</h2><p>จัดการ Widget บนหน้าเว็บไซต์</p></div>
-    <button class="primary" onclick="showToast('เปิดระบบเพิ่ม Widget')">＋ Add Widget</button>
-  </div>
-  <div class="widgetGrid" id="widgetGrid"></div>
-</section>
-
-<!-- ANNOUNCEMENTS -->
-<section class="page" id="announcements">
-  <div class="pageHead">
-    <div><h2>Announcement Center</h2><p>จัดการประกาศสำหรับผู้ใช้งาน</p></div>
-    <button class="primary" onclick="openAnnouncement()">＋ New Announcement</button>
-  </div>
-
-  <div class="card">
-    <div class="tableWrap">
-      <table>
-        <thead><tr><th>Announcement</th><th>Status</th><th>Audience</th><th>Updated</th><th>Action</th></tr></thead>
-        <tbody id="announcementTable"></tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- USERS -->
-<section class="page" id="users">
-  <div class="pageHead">
-    <div><h2>User Management</h2><p>จัดการผู้ใช้งานในระบบแบบจำลอง</p></div>
-    <button class="primary" onclick="showToast('ระบบเพิ่ม User พร้อมใช้งาน')">＋ Add User</button>
-  </div>
-  <div class="card">
-    <div class="tableWrap">
-      <table>
-        <thead><tr><th>User</th><th>Role</th><th>Status</th><th>Last Activity</th><th>Access</th></tr></thead>
-        <tbody>
-          <tr><td><b>Somchai Admin</b></td><td>Administrator</td><td><span class="badge green">ONLINE</span></td><td>Just now</td><td><button class="secondary" onclick="showToast('เปิด User Profile')">View</button></td></tr>
-          <tr><td><b>System Manager</b></td><td>Manager</td><td><span class="badge green">ONLINE</span></td><td>3 min ago</td><td><button class="secondary">View</button></td></tr>
-          <tr><td><b>Content Team</b></td><td>Editor</td><td><span class="badge yellow">IDLE</span></td><td>24 min ago</td><td><button class="secondary">View</button></td></tr>
-          <tr><td><b>Guest Account</b></td><td>Viewer</td><td><span class="badge red">OFFLINE</span></td><td>2 hrs ago</td><td><button class="secondary">View</button></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- ANALYTICS -->
-<section class="page" id="analytics">
-  <div class="pageHead">
-    <div><h2>Analytics</h2><p>สถิติการใช้งานเว็บไซต์</p></div>
-    <button class="secondary" onclick="showToast('Export Analytics สำเร็จ')">⇩ Export</button>
-  </div>
-  <div class="stats">
-    <div class="stat"><small>AVG. SESSION</small><h3>08:42</h3><span class="trend">↗ 6.4%</span></div>
-    <div class="stat"><small>BOUNCE RATE</small><h3>24.8%</h3><span class="trend">↘ 3.1%</span></div>
-    <div class="stat"><small>CONVERSION</small><h3>18.4%</h3><span class="trend">↗ 2.7%</span></div>
-    <div class="stat"><small>UPTIME</small><h3>99.98%</h3><span class="trend">● Excellent</span></div>
-  </div>
-  <div class="card">
-    <div class="cardHead"><h3>Traffic Analysis</h3><span>Simulated data</span></div>
-    <div class="chart" style="height:260px">
-      <div class="bar" style="height:30%"></div>
-      <div class="bar" style="height:42%"></div>
-      <div class="bar" style="height:37%"></div>
-      <div class="bar" style="height:64%"></div>
-      <div class="bar" style="height:54%"></div>
-      <div class="bar" style="height:82%"></div>
-      <div class="bar" style="height:72%"></div>
-      <div class="bar" style="height:91%"></div>
-      <div class="bar" style="height:78%"></div>
-      <div class="bar" style="height:96%"></div>
-    </div>
-  </div>
-</section>
-
-<!-- THEME -->
-<section class="page" id="theme">
-  <div class="pageHead">
-    <div><h2>Theme Studio</h2><p>ปรับแต่งหน้าตาฝั่งผู้ใช้งาน</p></div>
-    <button class="primary" onclick="saveTheme()">✓ Apply Theme</button>
-  </div>
-  <div class="card">
-    <div class="formGrid">
-      <div class="field">
-        <label>เว็บไซต์ชื่อ</label>
-        <input id="siteName" value="PRO PORTAL">
-      </div>
-      <div class="field">
-        <label>ข้อความ Hero</label>
-        <input id="heroText" value="Welcome to our platform">
-      </div>
-      <div class="field">
-        <label>สีหลัก</label>
-        <input id="themeColor" type="color" value="#2563eb" style="height:45px;padding:4px">
-      </div>
-      <div class="field">
-        <label>โหมด</label>
-        <select id="themeMode">
-          <option>Modern</option>
-          <option>Minimal</option>
-          <option>Corporate</option>
-          <option>Neon</option>
-        </select>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PREVIEW -->
-<section class="page" id="preview">
-  <div class="pageHead">
-    <div><h2>Live Preview</h2><p>ตัวอย่างหน้าเว็บฝั่งผู้ใช้งาน</p></div>
-    <button class="secondary" onclick="renderPreview()">↻ Refresh Preview</button>
-  </div>
-
-  <div class="previewShell">
-    <div class="previewBrowser">
-      <div class="previewTop">
-        <div class="previewLogo" id="pvLogo">PRO PORTAL</div>
-        <div class="previewNav">
-          <span>Home</span>
-          <span>Services</span>
-          <span>News</span>
-          <span>Contact</span>
-        </div>
-      </div>
-      <div class="previewBody">
-        <div class="previewHero" id="pvHero">
-          <h1 id="pvHeroText">Welcome to our platform</h1>
-          <p>Experience a modern digital platform.</p>
-        </div>
-
-        <div class="previewCards" id="pvCards">
-          <div class="previewCard"><b>📢 Announcement</b><p>Latest information appears here.</p></div>
-          <div class="previewCard"><b>⚡ Quick Actions</b><p>Access frequently used services.</p></div>
-          <div class="previewCard"><b>📰 News</b><p>Latest news and updates.</p></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- LOGS -->
-<section class="page" id="logs">
-  <div class="pageHead">
-    <div><h2>Activity Logs</h2><p>ประวัติการเปลี่ยนแปลงระบบในเครื่องนี้</p></div>
-    <button class="danger secondary" onclick="clearLogs()">Clear Logs</button>
-  </div>
-  <div class="log" id="logsContainer"></div>
-</section>
-
-</div>
+<section class="page" data-p="faq" hidden><div class="wrap">
+<h2 class="sec">คำถามที่พบบ่อย</h2>
+<details><summary>จองแล้วต้องทำอย่างไรต่อ?</summary><p>รอแอดมินอนุมัติคิว ดูสถานะได้ที่หน้า "การจองของฉัน" และรอการแจ้งผลทางอีเมลหรือ LINE</p></details>
+<details><summary>ยกเลิกหรือเปลี่ยนเวลาได้ไหม?</summary><p>กด "ยกเลิกคิว" ในหน้า "การจองของฉัน" แล้วจองเวลาใหม่ ช่วงเวลาที่ยกเลิกจะกลับมาว่าง</p></details>
+<details><summary>ใช้โค้ดส่วนลดอย่างไร?</summary><p>ไปที่หน้า "โปรโมชัน" กด "ใช้โค้ดนี้" หรือพิมพ์โค้ดในช่องส่วนลดตอนจองคิว</p></details>
+<details><summary>ดูดวงแบบไหนเหมาะกับฉัน?</summary><p>ไพ่ทาโรต์และไพ่ยิปซีเหมาะกับคำถามเฉพาะเรื่อง โหราศาสตร์ไทยดูภาพรวมชีวิต ลายมือดูนิสัยและสุขภาพ เลขศาสตร์ดูเบอร์และชื่อ</p></details>
+<details><summary>ข้อมูลของฉันถูกเก็บที่ไหน?</summary><p>บัญชีและรีวิวของคุณเก็บในเบราว์เซอร์เครื่องนี้ การจองจะส่งถึงแอดมินเมื่อใช้งานผ่านระบบกลางเท่านั้น</p></details>
+</div></section>
 </main>
-</div>
+<footer class="foot"><div class="wrap"><b>🎄 เรือนแม่หมอ</b><span>ข้อมูลแม่หมอ ราคา และรีวิวเป็นตัวอย่าง การดูดวงใช้เพื่อความบันเทิงและเป็นแนวทางประกอบการตัดสินใจเท่านั้น</span><button class="btn ghost" id="admBtn">สำหรับแอดมิน</button></div></footer>
+<div id="toast" role="status"></div>
 
-<div class="toast" id="toast"></div>
+<dialog id="dlg"><form method="dialog" class="dl" id="form" novalidate>
+<h2 id="dt"></h2>
+<div class="sub" id="ds"></div>
+<div><div class="sub" style="margin-bottom:6px">เลือกวัน</div><div class="days" id="days"></div></div>
+<div><div class="sub" style="margin-bottom:6px">เลือกเวลา</div><div class="slots" id="slots"></div></div>
+<label>รูปแบบการดูดวง<select id="mode"><option>วิดีโอคอล</option><option>โทรศัพท์</option><option>นัดพบที่เรือนแม่หมอ</option></select></label>
+<label>ชื่อของคุณ<input id="nm" autocomplete="name"></label>
+<label>LINE ID หรือเบอร์โทร<input id="ct" autocomplete="tel"></label>
+<label>อีเมล (สำหรับรับการยืนยันคิว)<input id="em" type="email" autocomplete="email"></label>
+<label>เรื่องที่อยากรู้ (ไม่บังคับ)<input id="tp" placeholder="เช่น ความรัก การงาน การเงิน"></label>
+<label>โค้ดส่วนลด (ถ้ามี)<input id="pc" autocomplete="off" placeholder="เช่น XMAS25"></label><div class="sub" id="pr"></div>
+<div class="warn">โปรดรอการอนุมัติคิว: การจองจะยืนยันเมื่อแอดมินอนุมัติเท่านั้น</div>
+<div class="err" id="err" role="alert"></div>
+<div class="acts"><button type="button" class="btn ghost" id="cancel">ยกเลิก</button><button type="submit" class="btn" id="ok">ยืนยันการจอง</button></div>
+</form></dialog>
 
+<dialog id="login"><div class="dl">
+<div class="tabs"><button type="button" class="chip" id="tL" aria-pressed="true">เข้าสู่ระบบ</button><button type="button" class="chip" id="tS" aria-pressed="false">สมัครสมาชิกฟรี</button></div>
+<form id="lf" style="display:grid;gap:14px" novalidate>
+<h2 id="lt">เข้าสู่ระบบ</h2>
+<label class="su" hidden>ชื่อของคุณ<input id="ln" autocomplete="name"></label>
+<label class="su" hidden>เบอร์โทรหรือ LINE ID<input id="lc" autocomplete="tel"></label>
+<label>อีเมล<input id="le" type="email" autocomplete="email"></label>
+<label>รหัสผ่าน<input id="lp" type="password" autocomplete="current-password"></label>
+<label class="su" hidden>ยืนยันรหัสผ่าน<input id="lp2" type="password" autocomplete="new-password"></label>
+<div class="err" id="lerr" role="alert"></div>
+<div class="acts"><button type="submit" class="btn" id="lgo">เข้าสู่ระบบ</button></div>
+<div class="sub">สมัครฟรี ไม่มีค่าใช้จ่าย บัญชีเก็บในเบราว์เซอร์เครื่องนี้ ยังไม่ใช่ระบบสมาชิกกลาง</div>
+</form></div></dialog>
+<dialog id="rej"><div class="dl">
+<h2>ยืนยันไม่อนุมัติคิวนี้?</h2>
+<div class="sub" id="rejT"></div>
+<div class="warn" style="border-left-color:#d6342f">คำเตือน: เมื่อยืนยัน ช่วงเวลานี้จะกลับมาว่างให้คนอื่นจอง และจะเปิดอีเมลแจ้งลูกค้าต่อทันที</div>
+<label>เหตุผลที่แจ้งลูกค้า (ไม่บังคับ)<input id="rejW" placeholder="เช่น แม่หมอไม่ว่างช่วงนี้"></label>
+<div class="acts"><button type="button" class="btn ghost" id="rejNo">กลับไปก่อน</button><button type="button" class="btn" id="rejOk" style="background:#d6342f;color:#fff">ยืนยันไม่อนุมัติ</button></div>
+</div></dialog>
+<dialog id="done"><div class="dl"><h2>ส่งคำขอจองแล้ว</h2>
+<div class="notice" style="margin:0"><div><b>โปรดรอการอนุมัติคิว</b> คิวของคุณยังไม่ยืนยัน แอดมินจะตรวจและแจ้งผลทางอีเมลหรือ LINE สถานะล่าสุดดูได้ใน "การจองของฉัน"</div></div>
+<div class="warn" id="doneSync" role="status"></div>
+<div class="acts"><button class="btn" id="doneOk">รับทราบ</button></div></div></dialog>
+<dialog id="adm"><div class="dl">
+<h2>แอดมิน: อนุมัติการจอง</h2>
+<div id="lock"><label>รหัสแอดมิน<input id="pw" type="password" autocomplete="off"></label><div class="err" id="perr" role="alert"></div>
+<div class="acts"><button type="button" class="btn ghost" id="admClose">ปิด</button><button type="button" class="btn" id="pwOk">เข้าสู่ระบบ</button></div></div>
+<div id="panel" hidden><div class="sub" id="admSt" role="status"></div><div id="alist"></div><div class="acts" style="margin-top:12px"><button type="button" class="btn ghost" id="admRef">รีเฟรช</button><button type="button" class="btn ghost" id="admClose2">ปิด</button></div></div>
+</div></dialog>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-const defaultControls=[
- ["hero","Hero Banner","แบนเนอร์หลักของเว็บไซต์",true],
- ["welcome","Welcome Message","ข้อความต้อนรับผู้ใช้งาน",true],
- ["announcement","Announcement","ประกาศสำคัญ",true],
- ["statistics","Statistics","สถิติและตัวเลขสำคัญ",true],
- ["quick","Quick Actions","เมนูลัด",true],
- ["news","News Section","ข่าวสารล่าสุด",false],
- ["featured","Featured Content","เนื้อหาแนะนำ",true],
- ["footer","Footer","ส่วนท้ายเว็บไซต์",true]
-];
+const READERS=[
+{id:"r1",n:"แม่หมอจันทรา",c:"ไพ่ทาโรต์",y:12,p:500,t:["ความรัก","การงาน"],a:"จ"},
+{id:"r2",n:"แม่หมอพิมพ์ลดา",c:"ไพ่ยิปซี",y:8,p:400,t:["ความสัมพันธ์","การตัดสินใจ"],a:"พ"},
+{id:"r3",n:"อาจารย์ทิพยวารี",c:"โหราศาสตร์ไทย",y:25,p:800,t:["ดวงชะตา","ฤกษ์มงคล"],a:"ท"},
+{id:"r4",n:"แม่หมอนิลรัตน์",c:"ลายมือ",y:15,p:600,t:["สุขภาพ","การเงิน"],a:"น"},
+{id:"r5",n:"อาจารย์สุริยา",c:"เลขศาสตร์",y:10,p:450,t:["เบอร์มงคล","ชื่อมงคล"],a:"ส"}];
+const TIMES=["10:00","11:30","13:00","14:30","16:00","19:00","20:30"];
+const OMENS=["วันนี้เหมาะกับการเริ่มบทสนทนาที่ค้างไว้","ตัดสินใจเรื่องเงินให้ช้าลงอีกนิด แล้วจะเห็นทางชัดขึ้น","คนที่ไม่ได้ติดต่อกันนาน อาจทักมาเร็วๆ นี้","งานที่ทำเงียบๆ กำลังจะมีคนเห็น","พักสักหน่อย ไม่ต้องรีบตอบทุกเรื่องวันนี้"];
+const DECK=["ดวงอาทิตย์","ดวงจันทร์","ดวงดาว","ความรัก","ผู้วิเศษ"];
+const $=s=>document.querySelector(s);
+let favs=new Set(),favOnly=false,member=null;try{favs=new Set(JSON.parse(localStorage.getItem("fv")||"[]"))}catch(e){}
+const RT={r1:[4.9,128],r2:[4.8,96],r3:[5.0,210],r4:[4.7,74],r5:[4.8,152]};
+let uid=null,db=null,slotSet=new Set(),statusMap={},whyMap={},allBk=[],isAdmin=false;
+const PWH="e516ec3e2077f60cd857582120d2a230277c124f2db1abacf5db8525b5dcca77";
+let filter="ทั้งหมด",cur=null,pickDay=null,pickTime=null,bookings=[];
+try{bookings=JSON.parse(localStorage.getItem("bk")||"[]")}catch(e){bookings=[]}
+const SL=(r,d,t)=>r+"_"+d+"_"+t;
+const SLAB={pending:"รออนุมัติ",approved:"อนุมัติแล้ว",rejected:"ไม่อนุมัติ"};
+(async()=>{try{if(!(window.claude&&claude.use))return;db=await claude.use("db");if(!db)return;try{const u=await claude.use("user");uid=u?await u.id():null}catch(e){}
+db.collection("slots").onSnapshot(q=>{slotSet=new Set(q.docs.map(d=>d.id));if(cur&&pickDay)renderSlots()},()=>{});
+db.collection("status").onSnapshot(q=>{statusMap={};whyMap={};q.docs.forEach(d=>{const x=d.data()||{};statusMap[d.id]=x.s;whyMap[d.id]=x.why||""});renderMine()},()=>{});
+}catch(e){db=null}})();
+async function syncAdd(b){if(!db||!uid)return false;try{const r=db.doc("bookings/"+uid),sn=await r.get(),it=sn.exists?(sn.data().items||[]):[];if(!it.some(x=>x.id===b.id))it.push(b);await r.set({items:it});await db.doc("slots/"+SL(b.r,b.d,b.t)).set({r:b.r,d:b.d,t:b.t});return true}catch(e){return false}}
+async function syncDel(b){if(!db||!uid)return;try{const r=db.doc("bookings/"+uid),sn=await r.get(),it=(sn.exists?(sn.data().items||[]):[]).filter(x=>x.id!==b.id);await r.set({items:it});await db.doc("slots/"+SL(b.r,b.d,b.t)).delete()}catch(e){}}
+function save(){try{localStorage.setItem("bk",JSON.stringify(bookings))}catch(e){}}
+function dayList(){const o=[],d=new Date();for(let i=1;i<=7;i++){const x=new Date(d);x.setDate(d.getDate()+i);o.push(x)}return o}
+const key=d=>d.toISOString().slice(0,10);
+const lab=d=>d.toLocaleDateString("th-TH",{weekday:"short",day:"numeric",month:"short"});
+function taken(r,dk,t){if(slotSet.has(SL(r.id,dk,t)))return true;if(bookings.some(b=>b.r===r.id&&b.d===dk&&b.t===t))return true;let h=0;for(const ch of r.id+dk+t)h=(h*31+ch.charCodeAt(0))%97;return h%4===0}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 
-const widgets=[
- ["📊","Statistics","แสดงข้อมูลสถิติสำคัญ"],
- ["📢","Announcement","ประกาศและข่าวสาร"],
- ["⚡","Quick Actions","เมนูลัดสำหรับผู้ใช้งาน"],
- ["📰","Latest News","ข่าวสารล่าสุด"],
- ["📅","Calendar","ปฏิทินกิจกรรม"],
- ["🔔","Notifications","การแจ้งเตือน"],
- ["📁","Documents","เอกสารสำคัญ"],
- ["💬","Support","ศูนย์ช่วยเหลือ"],
- ["⭐","Featured","เนื้อหาแนะนำ"],
- ["🔗","Quick Links","ลิงก์สำคัญ"],
- ["📈","Performance","ข้อมูลประสิทธิภาพ"],
- ["ℹ️","Information","ข้อมูลระบบ"]
-];
+// omen deck
+DECK.forEach((n,i)=>{const b=document.createElement("button");b.className="tcard";b.textContent="✦";b.setAttribute("aria-label","เปิดไพ่ใบที่ "+(i+1));
+b.onclick=()=>{document.querySelectorAll(".tcard").forEach(x=>{x.classList.remove("open");x.textContent="✦"});b.classList.add("open");b.textContent=n;$("#omen").textContent=OMENS[(i+new Date().getDate())%OMENS.length]};$("#deck").append(b)});
 
-let state=JSON.parse(localStorage.getItem("proControlState")||"null")||{
- controls:Object.fromEntries(defaultControls.map(x=>[x[0],x[3]])),
- siteName:"PRO PORTAL",
- heroText:"Welcome to our platform",
- color:"#2563eb",
- logs:[]
-};
+function renderFilters(){const cats=["ทั้งหมด",...new Set(READERS.map(r=>r.c))];$("#filters").innerHTML="";
+cats.forEach(c=>{const b=document.createElement("button");b.className="chip";b.textContent=c;b.setAttribute("aria-pressed",c===filter);b.onclick=()=>{filter=c;renderFilters();renderGrid()};$("#filters").append(b)});const f=document.createElement("button");f.className="chip";f.textContent="♥ ที่ชอบ";f.setAttribute("aria-pressed",favOnly);f.onclick=()=>{favOnly=!favOnly;renderFilters();renderGrid()};$("#filters").append(f)}
+const ART={
+"ไพ่ทาโรต์":()=>`<svg viewBox="0 0 200 100" aria-hidden="true"><g transform="rotate(-12 80 50)"><rect class="p" x="55" y="12" width="52" height="78" rx="6"/><rect class="g" x="59" y="16" width="44" height="70" rx="4"/></g><g transform="rotate(10 125 50)"><rect class="fc" x="100" y="10" width="52" height="80" rx="6"/><path class="f" d="M126 32l4 10h10l-8 6 3 10-9-6-9 6 3-10-8-6h10z"/></g></svg>`,
+"ไพ่ยิปซี":()=>`<svg viewBox="0 0 200 100" aria-hidden="true">${[-24,0,24].map((a,i)=>`<g transform="rotate(${a} 100 100)"><rect class="${i==1?"fc":"p"}" x="76" y="12" width="48" height="74" rx="6"/><rect class="g" x="80" y="16" width="40" height="66" rx="4"/></g>`).join("")}<circle class="f" cx="100" cy="48" r="6"/></svg>`,
+"โหราศาสตร์ไทย":()=>`<svg viewBox="0 0 200 100" aria-hidden="true"><circle class="g" cx="100" cy="50" r="40"/><circle class="g" cx="100" cy="50" r="26"/>${Array.from({length:12},(_,i)=>{const a=i*Math.PI/6;return `<line class="g" x1="${100+26*Math.cos(a)}" y1="${50+26*Math.sin(a)}" x2="${100+40*Math.cos(a)}" y2="${50+40*Math.sin(a)}"/>`}).join("")}<circle class="f" cx="100" cy="50" r="8"/></svg>`,
+"ลายมือ":()=>`<svg viewBox="0 0 200 100" aria-hidden="true"><circle class="p" cx="100" cy="50" r="38" opacity=".35"/><path class="g" d="M70 40Q100 20 132 44"/><path class="g" d="M68 56Q100 40 134 62"/><path class="g" d="M82 30Q92 62 110 84"/><circle class="f" cx="124" cy="36" r="3"/></svg>`,
+"เลขศาสตร์":()=>`<svg viewBox="0 0 200 100" aria-hidden="true">${[[55,"7"],[100,"3"],[145,"9"]].map(([x,n])=>`<circle class="g" cx="${x}" cy="50" r="22"/><text class="t" x="${x}" y="59" text-anchor="middle">${n}</text>`).join("")}</svg>`};
+function cardEl(r){const el=document.createElement("article");el.className="reader";
+el.innerHTML=`<div class="art">${(ART[r.c]||(()=>""))()}</div><button class="heart" aria-pressed="${favs.has(r.id)}" aria-label="บันทึก ${r.n} เป็นที่ชอบ">♥</button><div class="top"><div class="av" aria-hidden="true">${r.a}</div><div><h3>${r.n}</h3><div class="sub">${r.c} · ประสบการณ์ ${r.y} ปี</div><div class="rate">★ ${RT[r.id][0]} <small>(${RT[r.id][1]} รีวิว)</small></div></div></div>
+<div class="tags">${r.t.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+<div class="row"><div class="price">฿${r.p.toLocaleString()} <small>/ 30 นาที</small></div><button class="btn book">จองคิว</button></div>`;
+el.querySelector(".book").onclick=()=>openBook(r);
+el.querySelector(".heart").onclick=()=>{favs.has(r.id)?favs.delete(r.id):favs.add(r.id);try{localStorage.setItem("fv",JSON.stringify([...favs]))}catch(e){}renderGrid();renderFeat()};
+return el}
+function renderFeat(){const g=$("#feat");g.innerHTML="";[...READERS].sort((a,b)=>RT[b.id][0]-RT[a.id][0]).slice(0,3).forEach(r=>g.append(cardEl(r)))}
+function renderGrid(){const g=$("#grid");g.innerHTML="";
+const q=$("#q").value.trim().toLowerCase(),so=$("#sort").value;
+const L=READERS.filter(r=>(filter==="ทั้งหมด"||r.c===filter)&&(!favOnly||favs.has(r.id))&&(!q||(r.n+r.c+r.t.join("")).toLowerCase().includes(q)));
+if(so==="p")L.sort((a,b)=>a.p-b.p);if(so==="y")L.sort((a,b)=>b.y-a.y);if(so==="r")L.sort((a,b)=>RT[b.id][0]-RT[a.id][0]);
+if(!L.length){g.innerHTML='<div class="empty">ไม่พบแม่หมอที่ตรงกับเงื่อนไข ลองล้างคำค้นหาหรือเลือกศาสตร์อื่น</div>';return}
+L.forEach(r=>g.append(cardEl(r)))}
 
-function saveState(){
- localStorage.setItem("proControlState",JSON.stringify(state));
-}
+function openBook(r){cur=r;pickDay=null;pickTime=null;$("#dt").textContent="จองคิวกับ"+r.n;$("#ds").textContent=r.c+" · ฿"+r.p.toLocaleString()+" / 30 นาที";$("#err").textContent="";$("#nm").value=member?member.nm:"";$("#ct").value=member?member.ct:"";$("#em").value=member?member.em:"";$("#pc").value=activeCode;calc();
+const D=$("#days");D.innerHTML="";dayList().forEach(d=>{const b=document.createElement("button");b.type="button";b.className="slot";b.textContent=lab(d);b.setAttribute("aria-pressed","false");
+b.onclick=()=>{pickDay=key(d);pickTime=null;[...D.children].forEach(x=>x.setAttribute("aria-pressed",x===b));renderSlots()};D.append(b)});
+renderSlots();$("#dlg").showModal()}
+function renderSlots(){const S=$("#slots");S.innerHTML="";
+if(!pickDay){S.innerHTML='<div class="empty">เลือกวันก่อน แล้วจะเห็นเวลาที่ว่าง</div>';return}
+TIMES.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="slot";b.textContent=t+" น.";b.disabled=taken(cur,pickDay,t);b.setAttribute("aria-pressed",pickTime===t);
+b.onclick=()=>{pickTime=t;[...S.children].forEach(x=>x.setAttribute("aria-pressed",x===b))};S.append(b)})}
 
-function addLog(text){
- state.logs.unshift({
-  text,
-  time:new Date().toLocaleString("th-TH")
- });
- state.logs=state.logs.slice(0,50);
- saveState();
- renderLogs();
-}
+$("#cancel").onclick=()=>$("#dlg").close();
+$("#form").addEventListener("submit",e=>{e.preventDefault();
+const nm=$("#nm").value.trim(),ct=$("#ct").value.trim();
+if(!pickDay||!pickTime){$("#err").textContent="กรุณาเลือกวันและเวลาที่ว่าง";return}
+if(!nm){$("#err").textContent="กรุณากรอกชื่อของคุณ";$("#nm").focus();return}
+if(!ct){$("#err").textContent="กรุณากรอก LINE ID หรือเบอร์โทร เพื่อให้แม่หมอยืนยันคิว";$("#ct").focus();return}
+const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6),em=$("#em").value.trim();
+const pr=calc(),b={id,price:pr.final,promo:pr.code,own:member?member.ct:"",rn:cur.n,ts:Date.now(),r:cur.id,d:pickDay,t:pickTime,nm,ct,em,mode:$("#mode").value,tp:$("#tp").value.trim()};
+b.sent=false;bookings.push(b);save();const can=!!(db&&uid);
+$("#doneSync").textContent=can?"กำลังส่งถึงแอดมิน…":"⚠ การจองนี้ยังไม่ถูกส่งถึงแอดมิน เพราะยังไม่ได้เชื่อมระบบกลาง (ต้องล็อกอิน claude.ai) กรุณาแจ้งแอดมินทาง LINE หรือโทรศัพท์ด้วย";
+const cantMsg=$("#doneSync").textContent;
+syncAdd(b).then(ok=>{if(ok){b.sent=true;save();renderMine()}$("#doneSync").textContent=ok?"ส่งถึงแอดมินแล้ว รอการอนุมัติ":(can?"⚠ ส่งถึงแอดมินไม่สำเร็จ กดส่งอีกครั้งในหน้า การจองของฉัน":cantMsg)});
+$("#dlg").close();$("#form").reset();$("#done").showModal();renderMine();void 0});
 
-function showToast(text){
- const t=document.getElementById("toast");
- t.textContent=text;
- t.classList.add("show");
- setTimeout(()=>t.classList.remove("show"),2200);
-}
+function renderMine(){const M=$("#mine");
+if(!bookings.length){M.innerHTML='<div class="empty">ยังไม่มีการจอง เลือกแม่หมอด้านบนเพื่อจองคิวแรก</div>';return}
+M.innerHTML="";bookings.forEach((b,i)=>{if(b.own&&member&&b.own!==member.ct)return;const r=READERS.find(x=>x.id===b.r);const d=new Date(b.d+"T00:00:00");const el=document.createElement("div");el.className="bk";
+el.innerHTML=`<div><b>${r.n}</b> · ${r.c}<div class="sub">${lab(d)} เวลา ${b.t} น. · ${b.mode}${b.tp?" · "+esc(b.tp):""}</div><div class="sub">${b.price?"฿"+b.price.toLocaleString()+(b.promo?" (โค้ด "+esc(b.promo)+")":"")+" · ":""}ผู้จอง ${esc(b.nm)} (${esc(b.ct)}) · <b>${SLAB[statusMap[b.id]||"pending"]}</b>${statusMap[b.id]==="rejected"&&whyMap[b.id]?" · เหตุผล: "+esc(whyMap[b.id]):""}</div>${(statusMap[b.id]||"pending")==="pending"?'<div class="warn">โปรดรอการอนุมัติคิวจากแอดมิน</div>':""}</div><button class="btn ghost">ยกเลิกคิว</button>`;
+el.querySelector("button").onclick=()=>{bookings.splice(i,1);save();syncDel(b);renderMine()};
+if(b.sent===false){const w=document.createElement("div");w.className="warn";w.textContent="การจองนี้ยังไม่ถึงแอดมิน";el.firstElementChild.append(w);
+if(db&&uid){const rb=document.createElement("button");rb.className="btn";rb.textContent="ส่งถึงแอดมินอีกครั้ง";rb.onclick=async()=>{if(await syncAdd(b)){b.sent=true;save();renderMine();toast("ส่งถึงแอดมินแล้ว")}else toast("ส่งไม่สำเร็จ ลองใหม่อีกครั้ง")};el.append(rb)}}
+M.append(el)})
+if(!db&&bookings.length)M.insertAdjacentHTML("afterbegin",'<div class="sub" style="margin-bottom:8px">โหมดออฟไลน์: การจองนี้เก็บในเบราว์เซอร์ของคุณเท่านั้น แอดมินจะยังไม่เห็น</div>')}
 
-function showPage(id,btn){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- document.getElementById(id).classList.add("active");
+// admin
+async function sha(x){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(x));return [...new Uint8Array(b)].map(n=>n.toString(16).padStart(2,"0")).join("")}
+$("#admBtn").onclick=()=>{$("#adm").showModal()};
+$("#admClose").onclick=$("#admClose2").onclick=()=>$("#adm").close();
+$("#pwOk").onclick=async()=>{let h="";try{h=await sha($("#pw").value)}catch(e){}
+if(h!==PWH){$("#perr").textContent="รหัสไม่ถูกต้อง";return}
+$("#pw").value="";$("#lock").hidden=true;$("#panel").hidden=false;loadAdmin()};
+let unsubA=null;
+async function loadAdmin(){const L=$("#alist");$("#admSt").textContent="กำลังเชื่อมฐานข้อมูลกลาง…";
+for(let i=0;i<16&&!db;i++)await new Promise(r=>setTimeout(r,500));
+if(!db){$("#admSt").textContent="ยังไม่ได้เชื่อมฐานข้อมูลกลาง";L.innerHTML='<div class="empty">เปิดหน้านี้ขณะล็อกอิน claude.ai ด้วยบัญชีเจ้าของหรือแอดมิน แล้วกดรีเฟรช</div>';return}
+if(unsubA)unsubA();
+unsubA=db.collection("bookings").onSnapshot(q=>{allBk=q.docs.flatMap(d=>(d.data().items||[])).sort((a,b)=>(b.ts||0)-(a.ts||0));$("#admSt").textContent="เชื่อมฐานข้อมูลกลางแล้ว · มีผู้จองผ่านระบบ "+q.size+" บัญชี · รายการจอง "+allBk.length+" รายการ";drawAdmin()},err=>{$("#admSt").textContent="อ่านรายการจองไม่ได้ ("+((err&&err.code)||"ไม่มีสิทธิ์")+")";L.innerHTML='<div class="empty">ต้องเป็นเจ้าของหรือแอดมินของหน้านี้</div>'})}
+$("#admRef").onclick=()=>loadAdmin();
+function drawAdmin(){const L=$("#alist");L.innerHTML="";if(!allBk.length){L.innerHTML='<div class="empty">ยังไม่มีรายการจอง</div>';return}
+allBk.forEach(b=>{const st=statusMap[b.id]||"pending",d=new Date(b.d+"T00:00:00"),el=document.createElement("div");el.className="bk";
+el.innerHTML=`<div><b>${esc(b.rn||"")}</b> · ${esc(lab(d))} ${esc(b.t)} น. · ${esc(b.mode)}${b.price?" · ฿"+b.price.toLocaleString():""}<div class="sub">${esc(b.nm)} · ${esc(b.ct)}${b.em?" · "+esc(b.em):""}${b.tp?" · "+esc(b.tp):""}</div><div class="sub">สถานะ: <b>${SLAB[st]}</b></div></div><div class="acts" style="flex-wrap:wrap"></div>`;
+const A=el.querySelector(".acts");
+const mk=(t,f,g)=>{const x=document.createElement("button");x.className="btn"+(g?" ghost":"");x.textContent=t;x.onclick=f;A.append(x)};
+if(st!=="approved")mk("อนุมัติ",()=>setSt(b,"approved"));
+if(st!=="rejected")mk("ไม่อนุมัติ",()=>askReject(b),1);
+if(b.em&&st!=="pending"){const a=document.createElement("a");a.className="btn ghost";a.style.textDecoration="none";a.textContent="เขียนอีเมลแจ้ง";
+a.href=mailFor(b,st==="approved",whyMap[b.id]);A.append(a)}
+L.append(el)})}
+async function setSt(b,v,why){try{await db.doc("status/"+b.id).set({s:v,why:why||""});if(v==="rejected")await db.doc("slots/"+SL(b.r,b.d,b.t)).delete();return true}catch(e){alert("บันทึกไม่สำเร็จ: ต้องเป็นเจ้าของหรือแอดมิน");return false}}
 
- document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
- if(btn)btn.classList.add("active");
+function mailFor(b,ok,why){const d=new Date(b.d+"T00:00:00");
+const body=`สวัสดีคุณ${b.nm}\n\n`+(ok?`คิวดูดวงกับ${b.rn} วันที่ ${lab(d)} เวลา ${b.t} น. (${b.mode}) ได้รับการอนุมัติแล้ว`:`ขออภัย คิวดูดวงกับ${b.rn} วันที่ ${lab(d)} เวลา ${b.t} น. ยังไม่สามารถยืนยันได้`+(why?`\nเหตุผล: ${why}`:"")+`\nกรุณาเลือกเวลาอื่น`)+"\n\nเรือนแม่หมอ";
+return "mailto:"+encodeURIComponent(b.em)+"?subject="+encodeURIComponent(ok?"ยืนยันคิวดูดวง":"แจ้งผลการจองคิว")+"&body="+encodeURIComponent(body)}
+let rejB=null;
+function askReject(b){rejB=b;$("#rejT").textContent=`${b.rn} · ${lab(new Date(b.d+"T00:00:00"))} ${b.t} น. · ผู้จอง ${b.nm}`;$("#rejW").value="";$("#rej").showModal()}
+$("#rejNo").onclick=()=>$("#rej").close();
+$("#rejOk").onclick=async()=>{const b=rejB,why=$("#rejW").value.trim();$("#rej").close();
+if(!(await setSt(b,"rejected",why)))return;
+if(b.em){toast("บันทึกแล้ว กำลังเปิดอีเมลแจ้งลูกค้า");const a=document.createElement("a");a.href=mailFor(b,false,why);a.target="_blank";a.rel="noopener";document.body.append(a);a.click();a.remove()}
+else toast("บันทึกแล้ว ลูกค้าไม่ได้ใส่อีเมล ติดต่อทาง "+b.ct)};
 
- const titles={
-  dashboard:"Dashboard",
-  pageControl:"Page Controller",
-  widgets:"Widget Manager",
-  announcements:"Announcement Center",
-  users:"User Management",
-  analytics:"Analytics",
-  theme:"Theme Studio",
-  preview:"Live Preview",
-  logs:"Activity Logs"
- };
- document.getElementById("topTitle").textContent=titles[id]||"Dashboard";
- renderPreview();
- if(innerWidth<760)document.getElementById("sidebar").classList.remove("open");
-}
+$("#q").oninput=renderGrid;$("#sort").onchange=renderGrid;$("#doneOk").onclick=()=>{$("#done").close();location.hash="#mine"};
 
-function toggleMenu(){
- document.getElementById("sidebar").classList.toggle("open");
-}
+const RM=matchMedia("(prefers-reduced-motion:reduce)").matches;
+let AC=null,master=null,dly=null,muted=false,stopStars=false;
+function startAudio(){try{AC=new(window.AudioContext||window.webkitAudioContext)();
+master=AC.createGain();master.gain.value=0;
+dly=AC.createDelay(1);dly.delayTime.value=.28;const fb=AC.createGain();fb.gain.value=.35;dly.connect(fb);fb.connect(dly);
+const wet=AC.createGain();wet.gain.value=.4;dly.connect(wet);wet.connect(master);master.connect(AC.destination);
+master.gain.setTargetAtTime(muted?0:.4,AC.currentTime,1);
+Promise.resolve(AC.resume()).then(song);setInterval(song,18000)}catch(e){AC=null}}
+function note(m,t,d){const f=440*Math.pow(2,(m-69)/12),L=Math.max(d,.6)+.5;
+[[1,.22],[2.01,.08],[4.1,.03]].forEach(([k,v])=>{const o=AC.createOscillator(),g=AC.createGain();o.type="sine";o.frequency.value=f*k;
+g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+L);
+o.connect(g);g.connect(master);g.connect(dly);o.start(t);o.stop(t+L+.1)})}
+const JB=[[64,1],[64,1],[64,2],[64,1],[64,1],[64,2],[64,1],[67,1],[60,1.5],[62,.5],[64,4],[65,1],[65,1],[65,1.5],[65,.5],[65,1],[64,1],[64,1],[64,.5],[64,.5],[64,1],[62,1],[62,1],[64,1],[62,2],[67,2]];
+function song(){if(!AC||muted||AC.state!=="running")return;let t=AC.currentTime+.1;JB.forEach(([m,b])=>{note(m+12,t,b*.5);t+=b*.5})}
+function paintSnd(){const b=$("#snd");b.textContent=muted?"🔇":"🔊";b.setAttribute("aria-pressed",muted);b.setAttribute("aria-label",muted?"เปิดเพลงคริสต์มาส":"ปิดเพลงคริสต์มาส")}
+$("#snd").onclick=()=>{muted=!muted;if(!AC&&!muted)startAudio();if(AC){if(AC.state==="suspended")AC.resume();master.gain.setTargetAtTime(muted?0:.35,AC.currentTime,.3)}paintSnd()};
+document.addEventListener("visibilitychange",()=>{if(!AC)return;if(document.hidden)AC.suspend();else if(!muted)AC.resume()});
 
-function renderControls(){
- const box=document.getElementById("controls");
- box.innerHTML="";
- defaultControls.forEach(item=>{
-  const [id,name,desc]=item;
-  const el=document.createElement("div");
-  el.className="controlItem";
-  el.innerHTML=`
-   <div class="controlInfo">
-    <b>${name}</b>
-    <p>${desc}</p>
-   </div>
-   <button class="toggle ${state.controls[id]?"on":""}" onclick="toggleControl('${id}',this)">
-    <i></i>
-   </button>
-  `;
-  box.appendChild(el);
- });
-}
+(function(){const c=$("#cv"),x=c.getContext("2d");let w,h,S=[];
+function size(){w=c.width=innerWidth;h=c.height=innerHeight;S=Array.from({length:Math.min(140,Math.floor(w*h/10000))},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*2.2+.8,v:Math.random()*.7+.3,p:Math.random()*6.28}))}
+function draw(){x.clearRect(0,0,w,h);x.fillStyle="#fff";S.forEach(t=>{t.y+=t.v;t.p+=.01;t.x+=Math.sin(t.p)*.4;if(t.y>h+4){t.y=-4;t.x=Math.random()*w}x.globalAlpha=.4+t.r/4;x.beginPath();x.arc(t.x,t.y,t.r,0,6.283);x.fill()});if(!stopStars&&!RM)requestAnimationFrame(draw)}
+size();draw();addEventListener("resize",size)})();
 
-function toggleControl(id,el){
- state.controls[id]=!state.controls[id];
- el.classList.toggle("on",state.controls[id]);
- renderPreview();
-}
+let mode="in";
+function setMode(m){mode=m;$("#tL").setAttribute("aria-pressed",m==="in");$("#tS").setAttribute("aria-pressed",m==="up");document.querySelectorAll(".su").forEach(x=>x.hidden=m==="in");$("#lt").textContent=m==="in"?"เข้าสู่ระบบ":"สมัครสมาชิกฟรี";$("#lgo").textContent=m==="in"?"เข้าสู่ระบบ":"สมัครสมาชิก";$("#lerr").textContent="";$("#lp").autocomplete=m==="in"?"current-password":"new-password"}
+$("#tL").onclick=()=>setMode("in");$("#tS").onclick=()=>setMode("up");
+function accs(){try{return JSON.parse(localStorage.getItem("acc")||"[]")}catch(e){return[]}}
+function showLogin(){member=null;$("#who").textContent="";document.querySelector("main").inert=true;$("#lf").reset();setMode("in");renderMine();if(!$("#login").open)$("#login").showModal()}
+function enter(m){member=m;document.querySelector("main").inert=false;$("#login").close();$("#lf").reset();
+$("#who").textContent="";const sp=document.createElement("span");sp.textContent="สวัสดีคุณ"+m.nm;const lo=document.createElement("button");lo.className="btn ghost";lo.textContent="ออกจากระบบ";lo.onclick=showLogin;$("#who").append(sp,lo);renderMine()}
+$("#login").addEventListener("cancel",e=>e.preventDefault());
+$("#lf").addEventListener("submit",async e=>{e.preventDefault();const em=$("#le").value.trim().toLowerCase(),pw=$("#lp").value,E=$("#lerr");
+if(!/^\S+@\S+\.\S+$/.test(em)){E.textContent="กรุณากรอกอีเมลให้ถูกต้อง";return}
+if(pw.length<6){E.textContent="รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร";return}
+const A=accs(),u=A.find(x=>x.em===em);
+try{
+if(mode==="up"){const nm=$("#ln").value.trim(),ct=$("#lc").value.trim();
+if(!nm||ct.length<5){E.textContent="กรุณากรอกชื่อ และเบอร์โทรหรือ LINE ID";return}
+if(pw!==$("#lp2").value){E.textContent="รหัสผ่านทั้งสองช่องไม่ตรงกัน";return}
+if(u){E.textContent="อีเมลนี้สมัครแล้ว กรุณาเข้าสู่ระบบ";return}
+const salt=Math.random().toString(36).slice(2);A.push({em,nm,ct,salt,h:await sha(salt+pw)});
+try{localStorage.setItem("acc",JSON.stringify(A))}catch(e2){}
+enter({nm,ct,em})}
+else{if(!u||u.h!==await sha(u.salt+pw)){E.textContent="อีเมลหรือรหัสผ่านไม่ถูกต้อง หากยังไม่มีบัญชี ให้สมัครสมาชิกฟรี";return}
+enter({nm:u.nm,ct:u.ct,em})}
+}catch(e3){E.textContent="เบราว์เซอร์นี้ไม่รองรับการเข้ารหัสรหัสผ่าน ลองเปิดด้วยเบราว์เซอร์อื่น"}});
 
-function saveControls(){
- saveState();
- addLog("บันทึก Page Controller Configuration");
- showToast("✓ Configuration saved");
- renderPreview();
-}
+function leaveIntro(){document.querySelector("header").inert=false;const i=$("#intro");i.classList.add("out");setTimeout(()=>{i.remove();stopStars=true},RM?0:850);showLogin()}
+$("#enter").onclick=()=>{muted=false;startAudio();paintSnd();leaveIntro()};
+$("#enterQ").onclick=()=>{muted=true;paintSnd();leaveIntro()};
 
-function renderWidgets(){
- const box=document.getElementById("widgetGrid");
- box.innerHTML="";
- widgets.forEach((w,i)=>{
-  const el=document.createElement("div");
-  el.className="widget";
-  el.innerHTML=`
-   <div class="widgetTop">
-    <div class="widgetIcon">${w[0]}</div>
-    <button class="toggle ${i<10?"on":""}" onclick="this.classList.toggle('on');updateWidgetCount()"><i></i></button>
-   </div>
-   <h4>${w[1]}</h4>
-   <p>${w[2]}</p>
-  `;
-  box.appendChild(el);
- });
-}
+const PROMOS={XMAS25:{p:.25,d:"ลด 25% ทุกแม่หมอ"},NEWYEAR:{f:100,d:"ลดทันที ฿100 รับปีใหม่"},FIRST:{p:.1,d:"ลด 10% สำหรับการจองครั้งแรก"}};
+let activeCode="";
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),2600)}
+function calc(){const code=$("#pc").value.trim().toUpperCase(),P=PROMOS[code],base=cur?cur.p:0;
+const disc=P?(P.p?Math.round(base*P.p):Math.min(P.f,base)):0,fin=base-disc;
+$("#pr").textContent=P?`ใช้โค้ด ${code}: ฿${base.toLocaleString()} − ฿${disc.toLocaleString()} = ฿${fin.toLocaleString()}`:(code?"ไม่พบโค้ดนี้":`ยอดชำระ ฿${base.toLocaleString()}`);
+return{final:fin,code:P?code:""}}
+$("#pc").addEventListener("input",calc);
+function renderTickets(){const g=$("#tickets");g.innerHTML="";Object.entries(PROMOS).forEach(([c,v])=>{const el=document.createElement("div");el.className="ticket";
+el.innerHTML=`<div class="code">${c}</div><div>${v.d}</div><div class="sub">ตัวอย่างโค้ดสำหรับเดโม</div><button class="btn">ใช้โค้ดนี้</button>`;
+el.querySelector("button").onclick=()=>{activeCode=c;toast("ใช้โค้ด "+c+" แล้ว เลือกแม่หมอเพื่อจองคิว");location.hash="#readers"};g.append(el)})}
 
-function updateWidgetCount(){
- const count=document.querySelectorAll("#widgetGrid .toggle.on").length;
- document.getElementById("widgetCount").textContent=count;
- addLog("เปลี่ยนสถานะ Widget");
-}
+const WD=[["อาทิตย์","#d6342f","แดง"],["จันทร์","#f2d13b","เหลือง"],["อังคาร","#f27eb0","ชมพู"],["พุธ","#3fae6a","เขียว"],["พฤหัสบดี","#f08a24","ส้ม"],["ศุกร์","#4aa3e8","ฟ้า"],["เสาร์","#8a5bd1","ม่วง"]];
+const MSG=["วันนี้เหมาะกับการเริ่มบทสนทนาที่ค้างไว้","ตัดสินใจเรื่องเงินช้าลงอีกนิด จะเห็นทางชัดขึ้น","คนที่ไม่ได้ติดต่อกันนานอาจทักมา","งานที่ทำเงียบๆ กำลังมีคนเห็น","พักสักหน่อย ไม่ต้องรีบตอบทุกเรื่อง","มีข่าวดีเล็กๆ ระหว่างวัน อย่าลืมสังเกต"];
+const stars=n=>"★".repeat(n)+"☆".repeat(5-n);
+$("#bdGo").onclick=()=>{const i=+$("#bd").value,n=new Date(),sd=i*37+n.getDate()*11+n.getMonth()*5,st=k=>1+((sd*k+k*3)%5),w=WD[i];
+$("#dres").innerHTML=`<div class="dres"><div><span class="sw" style="background:${w[1]}"></span><b>เกิดวัน${w[0]}</b> · สีมงคลวันนี้ ${w[2]}</div><div>เลขนำโชค <b>${(sd*7)%90+10}</b></div><div>ความรัก <span class="rate">${stars(st(2))}</span></div><div>การงาน <span class="rate">${stars(st(3))}</span></div><div>การเงิน <span class="rate">${stars(st(5))}</span></div><div>${MSG[sd%MSG.length]}</div><a class="btn" style="text-decoration:none;justify-self:start" href="#readers">จองแม่หมอดูต่อ</a><div class="sub">เพื่อความบันเทิงเท่านั้น</div></div>`};
 
-function openAnnouncement(){
- const title=prompt("ชื่อประกาศ:");
- if(!title)return;
- addLog("สร้างประกาศ: "+title);
- showToast("✓ สร้างประกาศแล้ว");
- renderAnnouncements();
-}
+let REV=[];try{REV=JSON.parse(localStorage.getItem("rv")||"[]")}catch(e){}
+const SAMPLE=[{n:"คุณมะลิ",r:5,rid:"r1",t:"ดูไพ่แล้วสบายใจขึ้น อธิบายละเอียด",s:1},{n:"คุณภูมิ",r:4,rid:"r3",t:"ได้ฤกษ์ดีสำหรับวางแผนปีหน้า",s:1},{n:"คุณแพร",r:5,rid:"r2",t:"ตอบตรงประเด็น ไม่ยัดเยียด",s:1}];
+function renderRev(){const all=[...REV,...SAMPLE],avg=all.reduce((a,x)=>a+x.r,0)/all.length;
+$("#rsum").textContent=`คะแนนเฉลี่ย ${avg.toFixed(1)} จาก ${all.length} รีวิว`;
+const L=$("#rlist");L.innerHTML="";all.forEach(x=>{const rd=READERS.find(y=>y.id===x.rid),el=document.createElement("div");el.className="rev";
+const h=document.createElement("div");h.innerHTML='<span class="st"></span> <b></b> <span class="sub"></span>';h.querySelector(".st").textContent=stars(x.r);h.querySelector("b").textContent=x.n;h.querySelector(".sub").textContent="ดูกับ"+(rd?rd.n:"")+(x.s?" · ตัวอย่าง":"");
+const t=document.createElement("div");t.textContent=x.t;el.append(h,t);L.append(el)})}
+$("#rr").innerHTML=READERS.map(r=>`<option value="${r.id}">${r.n}</option>`).join("");
+$("#rf").addEventListener("submit",e=>{e.preventDefault();const t=$("#rt").value.trim();if(!t){toast("กรุณาเขียนรีวิวสั้นๆ");return}
+REV.unshift({n:member?member.nm:"ผู้ใช้",r:+$("#rs").value,rid:$("#rr").value,t});try{localStorage.setItem("rv",JSON.stringify(REV))}catch(e2){}
+$("#rt").value="";renderRev();toast("ขอบคุณสำหรับรีวิว")});
 
-function renderAnnouncements(){
- document.getElementById("announcementTable").innerHTML=`
- <tr>
-  <td><b>ระบบจะมีการปรับปรุงในวันเสาร์</b></td>
-  <td><span class="badge green">PUBLISHED</span></td>
-  <td>Everyone</td><td>Today</td>
-  <td><button class="secondary" onclick="showToast('เปิดประกาศ')">View</button></td>
- </tr>
- <tr>
-  <td><b>Welcome to the new platform</b></td>
-  <td><span class="badge blue">SCHEDULED</span></td>
-  <td>Members</td><td>Tomorrow</td>
-  <td><button class="secondary" onclick="showToast('เปิดประกาศ')">View</button></td>
- </tr>
- <tr>
-  <td><b>Important service information</b></td>
-  <td><span class="badge yellow">DRAFT</span></td>
-  <td>Staff</td><td>Yesterday</td>
-  <td><button class="secondary">Edit</button></td>
- </tr>
- `;
-}
 
-function saveTheme(){
- state.siteName=document.getElementById("siteName").value||"PRO PORTAL";
- state.heroText=document.getElementById("heroText").value||"Welcome";
- state.color=document.getElementById("themeColor").value;
- saveState();
- addLog("อัปเดต Theme Studio");
- showToast("✓ Theme applied");
- renderPreview();
-}
-
-function renderPreview(){
- document.getElementById("pvLogo").textContent=state.siteName;
- document.getElementById("pvHeroText").textContent=state.heroText;
- document.getElementById("pvHero").style.background=
- `linear-gradient(135deg,${state.color},#06b6d4)`;
-
- const cards=document.getElementById("pvCards");
- cards.style.display="grid";
-
- const c=state.controls;
-
- if(!c.announcement &&
-    !c.quick &&
-    !c.news &&
-    !c.statistics &&
-    !c.featured){
-   cards.innerHTML='<div class="previewCard"><b>หน้าเว็บว่าง</b><p>พนักงานยังไม่ได้เปิด Component ใด ๆ</p></div>';
-   return;
- }
-
- cards.innerHTML="";
-
- if(c.announcement)
- cards.innerHTML+=`<div class="previewCard"><b>📢 Announcement</b><p>Latest information appears here.</p></div>`;
-
- if(c.quick)
- cards.innerHTML+=`<div class="previewCard"><b>⚡ Quick Actions</b><p>Access frequently used services.</p></div>`;
-
- if(c.news)
- cards.innerHTML+=`<div class="previewCard"><b>📰 News</b><p>Latest news and updates.</p></div>`;
-
- if(c.statistics)
- cards.innerHTML+=`<div class="previewCard"><b>📊 Statistics</b><p>12,480 users · 98.4% uptime</p></div>`;
-
- if(c.featured)
- cards.innerHTML+=`<div class="previewCard"><b>⭐ Featured Content</b><p>Recommended content for users.</p></div>`;
-}
-
-function renderLogs(){
- const box=document.getElementById("logsContainer");
- if(!state.logs.length){
-  box.innerHTML=`<div class="card" style="text-align:center;color:#667085">ยังไม่มี Activity Log</div>`;
-  return;
- }
- box.innerHTML=state.logs.map(x=>`
-  <div class="logItem">
-   ${x.text}
-   <span>${x.time}</span>
-  </div>
- `).join("");
-}
-
-function clearLogs(){
- state.logs=[];
- saveState();
- renderLogs();
- showToast("ล้าง Activity Logs แล้ว");
-}
-
-function exportSettings(){
- const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
- const a=document.createElement("a");
- a.href=URL.createObjectURL(blob);
- a.download="pro-control-settings.json";
- a.click();
- URL.revokeObjectURL(a.href);
- addLog("Export Settings");
- showToast("✓ Export สำเร็จ");
-}
-
-function importSettings(){
- const input=document.createElement("input");
- input.type="file";
- input.accept=".json";
- input.onchange=e=>{
-  const file=e.target.files[0];
-  if(!file)return;
-  const reader=new FileReader();
-  reader.onload=()=>{
-   try{
-    state=JSON.parse(reader.result);
-    saveState();
-    loadAll();
-    addLog("Import Settings");
-    showToast("✓ Import สำเร็จ");
-   }catch{
-    showToast("ไฟล์ไม่ถูกต้อง");
-   }
-  };
-  reader.readAsText(file);
- };
- input.click();
-}
-
-function resetAll(){
- if(!confirm("ต้องการ Reset ระบบทั้งหมดหรือไม่?"))return;
- localStorage.removeItem("proControlState");
- location.reload();
-}
-
-function loadAll(){
- renderControls();
- renderWidgets();
- renderAnnouncements();
- renderLogs();
-
- document.getElementById("siteName").value=state.siteName;
- document.getElementById("heroText").value=state.heroText;
- document.getElementById("themeColor").value=state.color;
-
- renderPreview();
-}
-
-loadAll();
+(function(){const box=$("#stage"),cv=$("#gl");if(!window.THREE){box.hidden=true;return}
+let R;try{R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true})}catch(e){box.hidden=true;return}
+R.setPixelRatio(Math.min(devicePixelRatio||1,2));
+const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(45,1,.1,100);cam.position.set(0,.5,7.4);
+sc.add(new THREE.AmbientLight(0xffffff,.7));
+const l1=new THREE.PointLight(0xf2b84b,1.5,40);l1.position.set(3,4,5);sc.add(l1);
+const l2=new THREE.PointLight(0x8a5bd1,1.2,40);l2.position.set(-4,-2,4);sc.add(l2);
+const ball=new THREE.Mesh(new THREE.SphereGeometry(1.25,48,48),new THREE.MeshPhysicalMaterial({color:0x9b7bff,transparent:true,opacity:.38,roughness:.05,metalness:.1,clearcoat:1}));
+const core=new THREE.Mesh(new THREE.IcosahedronGeometry(.62,1),new THREE.MeshBasicMaterial({color:0xf2b84b,wireframe:true}));
+const base=new THREE.Mesh(new THREE.CylinderGeometry(.95,1.2,.38,32),new THREE.MeshStandardMaterial({color:0x6b4217,metalness:.6,roughness:.4}));base.position.y=-1.5;
+const g=new THREE.Group();g.add(ball,core);sc.add(g,base);
+function face(sym,col,back){const c=document.createElement("canvas");c.width=256;c.height=400;const x=c.getContext("2d");
+x.fillStyle=back?"#2a1450":"#1d1030";x.fillRect(0,0,256,400);x.strokeStyle="#f2b84b";x.lineWidth=8;x.strokeRect(12,12,232,376);x.lineWidth=2;x.strokeRect(30,30,196,340);
+x.fillStyle=col;x.font=(back?"90":"130")+"px serif";x.textAlign="center";x.textBaseline="middle";x.fillText(sym,128,190);x.fillStyle="#f2b84b";x.font="26px serif";x.fillText("✦ ✦ ✦",128,330);return new THREE.CanvasTexture(c)}
+const side=new THREE.MeshStandardMaterial({color:0x2a1a05}),cards=[["☾","#d9d2ff"],["☀","#f2b84b"],["★","#ff8fb8"]].map(([sy,co],i)=>{
+const m=new THREE.Mesh(new THREE.BoxGeometry(.9,1.4,.03),[side,side,side,side,new THREE.MeshStandardMaterial({map:face(sy,co,0)}),new THREE.MeshStandardMaterial({map:face("✦","#f2b84b",1)})]);sc.add(m);return m});
+const N=140,pos=new Float32Array(N*3);for(let i=0;i<N;i++){pos[i*3]=(Math.random()-.5)*10;pos[i*3+1]=(Math.random()-.5)*7;pos[i*3+2]=(Math.random()-.5)*6}
+const pg=new THREE.BufferGeometry();pg.setAttribute("position",new THREE.BufferAttribute(pos,3));
+const pts=new THREE.Points(pg,new THREE.PointsMaterial({color:0xf2b84b,size:.05,transparent:true,opacity:.8}));sc.add(pts);
+function fit(){const w=box.clientWidth,h=box.clientHeight;if(!w||!h)return;R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();draw(0)}
+let px=0,py=0;addEventListener("pointermove",e=>{px=e.clientX/innerWidth-.5;py=e.clientY/innerHeight-.5});
+function draw(t){g.rotation.y=t*.25;core.rotation.x=t*.6;core.rotation.z=t*.4;g.position.y=Math.sin(t*1.2)*.08;
+cards.forEach((m,i)=>{const a=t*.45+i*2.0944;m.position.set(Math.cos(a)*2.7,Math.sin(t*.9+i*2)*.35+.2,Math.sin(a)*2.7);m.lookAt(0,m.position.y,0);m.rotation.z=Math.sin(t+i)*.12});
+pts.rotation.y=t*.03;cam.position.x+=(px*1.6-cam.position.x)*.04;cam.position.y+=(.5-py*1.2-cam.position.y)*.04;cam.lookAt(0,0,0);R.render(sc,cam)}
+new ResizeObserver(fit).observe(box);fit();
+if(RM)return;
+const t0=performance.now();(function loop(){if(box.offsetParent&&!document.hidden)draw((performance.now()-t0)/1000);requestAnimationFrame(loop)})()})();
+const PAGES=["home","readers","daily","promo","reviews","mine","faq"];
+function route(){const h=(location.hash||"#home").slice(1),id=PAGES.includes(h)?h:"home";
+document.querySelectorAll(".page").forEach(x=>x.hidden=x.dataset.p!==id);
+document.querySelectorAll(".nav a").forEach(a=>{if(a.getAttribute("href")==="#"+id)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+scrollTo(0,0)}
+addEventListener("hashchange",route);
+renderFilters();renderGrid();renderMine();renderFeat();renderTickets();renderRev();route();
+document.querySelector("header").inert=true;document.querySelector("main").inert=true;$("#enter").focus();
 </script>
-
 </body>
 </html>
+```[cite: 2]
